@@ -1,0 +1,373 @@
+<!-- activity_cue_generation.xml -->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:contentDescription="Back"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_margin="16dp" />
+
+    <!-- Instructions Text -->
+    <TextView
+        android:id="@+id/instructions_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cueInstruction"
+        android:textSize="16sp"
+        android:textColor="#000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back_button"
+        android:layout_margin="16dp" />
+
+    <!-- Input Fields with Labels -->
+    <LinearLayout
+        android:id="@+id/input_fields_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instructions_text"
+        android:layout_margin="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/label_subject"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Subject:"
+                android:textSize="16sp"
+                android:textColor="#000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <EditText
+                android:id="@+id/input_field_subject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter subject"
+                android:textColor="#000"
+                android:textColorHint="#888"
+                android:padding="8dp"
+                app:layout_constraintStart_toEndOf="@id/label_subject"
+                app:layout_constraintEnd_toStartOf="@id/question_mark_subject"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+
+            <ImageView
+                android:id="@+id/question_mark_subject"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_question_mark"
+                android:background="@drawable/clickable_background"
+                android:contentDescription="Help for subject"
+                android:padding="8dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Individual Input Field (Repeat this block for all six inputs) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/label_where"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Where:"
+                android:textSize="16sp"
+                android:textColor="#000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <EditText
+                android:id="@+id/input_field_where"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter where"
+                android:textColor="#000"
+                android:textColorHint="#888"
+                android:padding="8dp"
+                app:layout_constraintStart_toEndOf="@id/label_where"
+                app:layout_constraintEnd_toStartOf="@id/question_mark_where"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+
+            <ImageView
+                android:id="@+id/question_mark_where"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_question_mark"
+                android:background="@drawable/clickable_background"
+                android:contentDescription="Help for where"
+                android:padding="8dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+        <!-- Individual Input Field (Repeat this block for all six inputs) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/label_when"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="When:"
+                android:textSize="16sp"
+                android:textColor="#000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <EditText
+                android:id="@+id/input_field_when"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter where"
+                android:textColor="#000"
+                android:textColorHint="#888"
+                android:padding="8dp"
+                app:layout_constraintStart_toEndOf="@id/label_when"
+                app:layout_constraintEnd_toStartOf="@id/question_mark_when"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+
+            <ImageView
+                android:id="@+id/question_mark_when"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_question_mark"
+                android:background="@drawable/clickable_background"
+                android:contentDescription="Help for where"
+                android:padding="8dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+        <!-- Individual Input Field (Repeat this block for all six inputs) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/label_how"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="How:"
+                android:textSize="16sp"
+                android:textColor="#000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <EditText
+                android:id="@+id/input_field_how"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter where"
+                android:textColor="#000"
+                android:textColorHint="#888"
+                android:padding="8dp"
+                app:layout_constraintStart_toEndOf="@id/label_how"
+                app:layout_constraintEnd_toStartOf="@id/question_mark_how"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+
+            <ImageView
+                android:id="@+id/question_mark_how"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_question_mark"
+                android:background="@drawable/clickable_background"
+                android:contentDescription="Help for where"
+                android:padding="8dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+        <!-- Individual Input Field (Repeat this block for all six inputs) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/label_what"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="What:"
+                android:textSize="16sp"
+                android:textColor="#000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <EditText
+                android:id="@+id/input_field_what"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter what"
+                android:textColor="#000"
+                android:textColorHint="#888"
+                android:padding="8dp"
+                app:layout_constraintStart_toEndOf="@id/label_what"
+                app:layout_constraintEnd_toStartOf="@id/question_mark_what"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+
+            <ImageView
+                android:id="@+id/question_mark_what"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_question_mark"
+                android:background="@drawable/clickable_background"
+                android:contentDescription="Help for where"
+                android:padding="8dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+        <!-- Individual Input Field (Repeat this block for all six inputs) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/label_who"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Who:"
+                android:textSize="16sp"
+                android:textColor="#000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <EditText
+                android:id="@+id/input_field_who"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter who"
+                android:textColor="#000"
+                android:textColorHint="#888"
+                android:padding="8dp"
+                app:layout_constraintStart_toEndOf="@id/label_who"
+                app:layout_constraintEnd_toStartOf="@id/question_mark_who"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+
+            <ImageView
+                android:id="@+id/question_mark_who"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_question_mark"
+                android:background="@drawable/clickable_background"
+                android:contentDescription="Help for where"
+                android:padding="8dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Repeat the above ConstraintLayout block for "When," "What," "How," "Who," and "Subject" -->
+    </LinearLayout>
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="50dp"
+        android:onClick="submit"
+        android:text="Submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_fields_container" />
+
+    <!-- Loading Overlay -->
+    <RelativeLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center">
+
+        <!-- Circular ProgressBar to show loading -->
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

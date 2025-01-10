@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Question Text -->
+    <TextView
+        android:id="@+id/question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Question will appear here"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:padding="16dp"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Feedback Text -->
+    <TextView
+        android:id="@+id/feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Feedback will appear here"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Answer Buttons Container -->
+    <LinearLayout
+        android:id="@+id/answers_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Answer Buttons (7 buttons for TSRQ) -->
+        <Button
+            android:id="@+id/btn_left"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Not at all true"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_middle_left"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Slightly true"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_middle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Somewhat true"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_middle_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Moderately true"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Very true"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_right_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Extremely true"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_right_most"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Very true"
+            android:layout_marginBottom="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
