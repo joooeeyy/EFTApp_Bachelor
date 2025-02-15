@@ -14,6 +14,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
     }
 
     buildTypes {
@@ -36,11 +38,12 @@ android {
 }
 
 dependencies {
-    
+
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.noties.markwon:core:4.2.0")
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
+
 
     implementation(libs.appcompat)
     implementation(libs.material)

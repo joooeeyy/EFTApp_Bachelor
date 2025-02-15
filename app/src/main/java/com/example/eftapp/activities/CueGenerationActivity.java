@@ -1,22 +1,28 @@
 package com.example.eftapp.activities;
 
-import static com.example.eftapp.util.QuestionsRepository.PREFS_NAME;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,21 +33,23 @@ import java.util.ArrayList;
 
 import ViewModel.ApiViewModel;
 import util.InfoPopup;
+import util.PollManager;
 
 public class CueGenerationActivity extends AppCompatActivity {
 
-    private EditText inputFieldWhere, inputFieldWhen, inputFieldWhat, inputFieldHow, inputFieldWho, inputFieldSubject;
+    private EditText inputFieldWhere, inputFieldWhen, inputFieldWhat, inputFieldHow, inputFieldWho;
     private Button submitButton;
     private ApiViewModel apiViewModel;
-    private ImageView whereQ, whenQ, howQ, whatQ, whoQ, subjectQ;
+    private ImageView whereQ, whenQ, howQ, whatQ, whoQ, backButton;
+    private TextView displayGoal;
+
+    private TextView loadingMessage;
+    private Handler handler;
+    private Runnable changeMessage;
+    TextView instructionsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear(); // Remove specific key-value pair
-        editor.apply();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cue_generation);
 
@@ -51,7 +59,6 @@ public class CueGenerationActivity extends AppCompatActivity {
         inputFieldWhat = findViewById(R.id.input_field_what);
         inputFieldHow = findViewById(R.id.input_field_how);
         inputFieldWho = findViewById(R.id.input_field_who);
-        inputFieldSubject = findViewById(R.id.input_field_subject);
         submitButton = findViewById(R.id.submit_button);
 
         whereQ = findViewById(R.id.question_mark_where);
@@ -59,7 +66,30 @@ public class CueGenerationActivity extends AppCompatActivity {
         howQ = findViewById(R.id.question_mark_how);
         whatQ = findViewById(R.id.question_mark_what);
         whoQ = findViewById(R.id.question_mark_who);
-        subjectQ = findViewById(R.id.question_mark_subject);
+
+        backButton = findViewById(R.id.back_button);
+
+        displayGoal = findViewById(R.id.display_goal);
+
+        instructionsText = findViewById(R.id.instructions_text);
+        String text = getString(R.string.cueInstruction);
+        setIconText(text);
+
+        //LoadingMessage
+        loadingMessage = findViewById(R.id.loadingMessage);
+        String[] messages = {"Generating...", "How's your day?", "Nearly finished!", "Hang tight!"};
+        handler = new Handler();
+
+        changeMessage = new Runnable() {
+            int index = 0;
+
+            @Override
+            public void run() {
+                loadingMessage.setText(messages[index]);
+                index = (index + 1) % messages.length;
+                handler.postDelayed(this, 2000); // Update message every 2 seconds
+            }
+        };
 
         // Initialize Popup component
         InfoPopup infoPopup = new InfoPopup(this);
@@ -67,8 +97,15 @@ public class CueGenerationActivity extends AppCompatActivity {
         // Disable the button initially
         submitButton.setEnabled(false);
 
+        displayGoal.setText(getGoal());
+
+
         // Initialize ViewModel
         apiViewModel = new ViewModelProvider(this).get(ApiViewModel.class);
+
+        backButton.setOnClickListener(view -> {
+            finish();
+        });
 
         // Observe API response
         apiViewModel.getApiResponse().observe(this, success -> {
@@ -113,10 +150,8 @@ public class CueGenerationActivity extends AppCompatActivity {
         inputFieldWhat.addTextChangedListener(inputWatcher);
         inputFieldHow.addTextChangedListener(inputWatcher);
         inputFieldWho.addTextChangedListener(inputWatcher);
-        inputFieldSubject.addTextChangedListener(inputWatcher);
 
         // Set click listeners
-        subjectQ.setOnClickListener(v -> infoPopup.showPopup(v, getString(R.string.subject_instruction)));
         whereQ.setOnClickListener(v -> infoPopup.showPopup(v, getString(R.string.where_instruction)));
         whenQ.setOnClickListener(v -> infoPopup.showPopup(v, getString(R.string.when_instruction)));
         howQ.setOnClickListener(v -> infoPopup.showPopup(v, getString(R.string.how_instruction)));
@@ -129,10 +164,10 @@ public class CueGenerationActivity extends AppCompatActivity {
         ArrayList<String> inputs = new ArrayList<>();
         inputs.add(inputFieldWhere.getText().toString());
         inputs.add(inputFieldWhen.getText().toString());
-        inputs.add(inputFieldWhat.getText().toString());
         inputs.add(inputFieldHow.getText().toString());
+        inputs.add(inputFieldWhat.getText().toString());
         inputs.add(inputFieldWho.getText().toString());
-        inputs.add(inputFieldSubject.getText().toString());
+        inputs.add(getGoal());
 
         // Show loading spinner while making the API call
         showLoading(true);
@@ -147,21 +182,50 @@ public class CueGenerationActivity extends AppCompatActivity {
                 && !inputFieldWhen.getText().toString().trim().isEmpty()
                 && !inputFieldWhat.getText().toString().trim().isEmpty()
                 && !inputFieldHow.getText().toString().trim().isEmpty()
-                && !inputFieldWho.getText().toString().trim().isEmpty()
-                && !inputFieldSubject.getText().toString().trim().isEmpty();
+                && !inputFieldWho.getText().toString().trim().isEmpty();
 
         // Enable or disable the submit button based on the result
         submitButton.setEnabled(allFieldsFilled);
     }
 
     private void showLoading(boolean isLoading) {
-        RelativeLayout loadingOverlay = findViewById(R.id.loadingOverlay);
+        LinearLayout loadingOverlay = findViewById(R.id.loadingOverlay);
         if (isLoading) {
+            // Start changing messages when loading begins
+            handler.post(changeMessage);
+
             loadingOverlay.setVisibility(View.VISIBLE); // Show overlay
             submitButton.setEnabled(false); // Disable the button
         } else {
             loadingOverlay.setVisibility(View.GONE); // Hide overlay
             submitButton.setEnabled(true); // Enable the button
         }
+    }
+
+    private String getGoal() {
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        return preferences.getString("long_term_goal", null);
+    }
+
+    private void setIconText(String text) {
+        // Find the position of the word "here"
+        int start = text.indexOf("here");
+        int end = start + "here".length();
+
+        // Create a SpannableString from the text
+        SpannableString spannableString = new SpannableString(text);
+
+        // Load the drawable
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_question_mark); // Replace with your icon
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()); // Set bounds for the drawable
+
+        // Create an ImageSpan with the drawable
+        ImageSpan imageSpan = new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
+
+        // Replace "here" with the icon
+        spannableString.setSpan(imageSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Set the SpannableString to the TextView
+        instructionsText.setText(spannableString);
     }
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,8 +25,13 @@ import ViewModel.QuestionsViewModel;
 public class GoalActivity extends AppCompatActivity {
 
     private EditText longTermGoalInput;
+    private EditText ageInput;
+    private RadioGroup genderInput;
     private Button submitButton;
     private QuestionsViewModel questionsViewModel;
+    private String goal;
+    private String age;
+    private String gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,9 @@ public class GoalActivity extends AppCompatActivity {
         // Initialize UI Elements
         TextView instructionText = findViewById(R.id.instruction_text);
         longTermGoalInput = findViewById(R.id.long_term_goal_input);
+        genderInput = findViewById(R.id.gender_radio_group);
+        ageInput = findViewById(R.id.age_input);
+
         submitButton = findViewById(R.id.submit_button);
 
         questionsViewModel = new ViewModelProvider(this).get(QuestionsViewModel.class);
@@ -43,6 +52,7 @@ public class GoalActivity extends AppCompatActivity {
         questionsViewModel.fetchQuestionsLiveData().observe(this, success -> {
             if (success != null) {
                 if (success) {
+                    saveLongTermGoal(goal);
                     showLoading(false);
                     finish();
                 } else {
@@ -53,10 +63,21 @@ public class GoalActivity extends AppCompatActivity {
 
         // Handle Submit Button Click
         submitButton.setOnClickListener(v -> {
-            String goal = longTermGoalInput.getText().toString().trim();
+            goal = longTermGoalInput.getText().toString().trim();
+            age = ageInput.getText().toString().trim();
 
-            if (goal.isEmpty()) {
-                Toast.makeText(this, "Please enter a goal before submitting.", Toast.LENGTH_SHORT).show();
+            // Get the selected gender from the RadioGroup
+            int selectedGenderId = genderInput.getCheckedRadioButtonId();
+            if (selectedGenderId == R.id.male_radio_button) {
+                gender = "male";
+            } else if (selectedGenderId == R.id.female_radio_button) {
+                gender = "female";
+            } else {
+                gender = "other"; // or handle as per your requirements
+            }
+
+            if (goal.isEmpty() || age.isEmpty() || gender.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields before submitting.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -66,7 +87,7 @@ public class GoalActivity extends AppCompatActivity {
                     .setMessage("Are you sure you want to submit this as your long-term goal? It cannot be changed later.")
                     .setPositiveButton("Yes", (dialog, which) -> {
                         showLoading(true);
-                        questionsViewModel.fetchQuestions(goal); // Trigger LiveData update
+                        questionsViewModel.fetchQuestions(goal, age, gender); // Pass age and gender to ViewModel
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
@@ -87,17 +108,11 @@ public class GoalActivity extends AppCompatActivity {
         }
     }
 
-//    private void saveLongTermGoal(String goal) {
-//        // Save the goal in SharedPreferences
-//        SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putString("long_term_goal", goal);
-//        editor.apply();
-//
-//        // Disable input and button
-//        longTermGoalInput.setEnabled(false);
-//        submitButton.setEnabled(false);
-//
-//        Toast.makeText(this, "Long-term goal submitted successfully!", Toast.LENGTH_LONG).show();
-//    }
+    private void saveLongTermGoal(String goal) {
+        // Save the goal in SharedPreferences
+        SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("long_term_goal", goal);
+        editor.apply();
+    }
 }

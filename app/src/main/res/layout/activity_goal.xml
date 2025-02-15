@@ -5,6 +5,20 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <!-- Title at the Very Top -->
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Set Your Long-Term Goal"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Instruction Text -->
     <TextView
         android:id="@+id/instruction_text"
@@ -13,7 +27,7 @@
         android:text="Please set your long-term goal. Once submitted, it cannot be changed."
         android:textSize="18sp"
         android:textAlignment="center"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp"/>
@@ -32,6 +46,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/instruction_text" />
 
+    <!-- Input Field for Age -->
+    <EditText
+        android:id="@+id/age_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@android:drawable/edit_text"
+        android:hint="Enter your age"
+        android:inputType="number"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/long_term_goal_input" />
+
+    <!-- Gender Selection Section -->
+    <TextView
+        android:id="@+id/gender_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gender:"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/age_input" />
+
+    <RadioGroup
+        android:id="@+id/gender_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gender_label">
+
+        <RadioButton
+            android:id="@+id/male_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:layout_marginEnd="16dp"/>
+
+        <RadioButton
+            android:id="@+id/female_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"/>
+    </RadioGroup>
+
     <!-- Submit Button -->
     <Button
         android:id="@+id/submit_button"
@@ -43,7 +105,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/long_term_goal_input" />
+        app:layout_constraintTop_toBottomOf="@id/gender_radio_group" />
 
     <!-- Loading Overlay -->
     <RelativeLayout

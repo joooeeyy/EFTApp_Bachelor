@@ -19,13 +19,12 @@ public class QuestionsViewModel extends AndroidViewModel {
     }
 
     // Method to request questions based on the long-term goal
-    public void fetchQuestions(String goal) {
-        repository.getAiQuestions(goal, new QuestionsApi.ApiResponseCallback() {
+    public void fetchQuestions(String goal, String age, String gender) {
+        repository.getAiQuestions(goal, age, gender, new QuestionsApi.ApiResponseCallback() {
             @Override
             public void onSuccess(String questions) {
-                // Store the questions in SharedPreferences
                 repository.saveQuestionsToSharedPreferences(questions);
-                questionsLiveData.postValue(true); // Update the live data
+                questionsLiveData.postValue(true);
             }
 
             @Override

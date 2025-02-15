@@ -3,19 +3,20 @@ package util;
 public class BelohnungsaufschubPoll implements Poll {
 
     private final String[] questions = {
-            "Wenn ich etwas sehe, was ich gerne haben möchte, kaufe ich es im Allgemeinen, ob ich es mir leisten kann oder nicht.", // -
-            "Ich finde es besser, 'von der Hand in den Mund zu leben', als längerfristig auf etwas zu sparen.", // -
-            "Wenn ich einkaufe, fällt es mir schwer, nur das zu kaufen, was ich mir vorgenommen habe.", // -
-            "Wenn man nicht versucht, seine Wünsche sofort zu erfüllen, kann es sein, dass man im Leben etwas versäumt.", // -
-            "Leute, die viel sparen und deshalb auf vieles verzichten müssen, sind selbst schuld, denn sie haben nicht viel vom Leben.", // -
-            "Beim Einkaufen bin ich häufig versucht, spontan Dinge zu kaufen, die mir gerade ins Auge stechen.", // -
-            "Im Allgemeinen lege ich für mögliche Notfälle in der Zukunft etwas Geld zurück.", // +
-            "Wenn ich etwas gerne haben möchte, fällt es mir schwer, längere Zeit darauf zu warten.", // -
-            "Gegen Monatsende bin ich immer knapp bei Kasse.", // -
-            "Ich habe immer ausreichend Vorräte für Notzeiten zuhause.", // +
-            "Ich plane im Leben immer alles gründlich, bevor ich etwas entscheide.", // +
-            "Wenn ich einkaufe, komme ich häufig mit Dingen nach Hause, die ich eigentlich gar nicht wollte." // -
+            "When I see something I want, I usually buy it, whether I can afford it or not.", // -
+            "I think it's better to 'live hand to mouth' than to save up for something in the long term.", // -
+            "When I go shopping, I find it hard to stick to only what I planned to buy.", // -
+            "If you don't try to fulfill your desires immediately, you might miss out on something in life.", // -
+            "People who save a lot and have to give up many things because of it are to blame themselves, as they don't get much out of life.", // -
+            "When shopping, I am often tempted to buy things spontaneously that catch my eye.", // -
+            "In general, I set aside some money for possible emergencies in the future.", // +
+            "When I want something, I find it hard to wait for a long time.", // -
+            "At the end of the month, I am always short on cash.", // -
+            "I always have enough supplies at home for hard times.", // +
+            "I always plan everything thoroughly in life before making a decision.", // +
+            "When I shop, I often come home with things I didn't really want." // -
     };
+
 
     // Polarity: true for positive items, false for negative items
     private final boolean[] itemPolarity = {
@@ -26,6 +27,8 @@ public class BelohnungsaufschubPoll implements Poll {
             true,  // Positive item (1: delayed)
             true,  // Positive item (1: delayed)
             false  // Negative item (0: immediate)
+
+
     };
 
     private final int[] responses; // Store responses (0 = No, 1 = Yes)
@@ -86,7 +89,9 @@ public class BelohnungsaufschubPoll implements Poll {
             if (responses[i] == 1) {
                 // If the item is positive, 1 means delayed (good)
                 // If the item is negative, 1 means immediate (bad)
-                score += (itemPolarity[i] ? 1 : 0); // Add 1 for positive items
+                score += (itemPolarity[i] ? 0 : 1); // Add 1 for positive items
+            } else {
+                score += (itemPolarity[i] ? 1 : 0);
             }
         }
         return new double[]{score};

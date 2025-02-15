@@ -3,6 +3,8 @@ package com.example.eftapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -38,6 +40,17 @@ public class HomeFragment extends Fragment implements CueAdapter.OnItemClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // Set up the Toolbar
+        androidx.appcompat.widget.Toolbar toolbar = rootView.findViewById(R.id.home_toolbar);
+        if (getActivity() instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            activity.setSupportActionBar(toolbar);
+            // Use ContextCompat to get the color
+            toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+            toolbar.setTitle("Future Events Hub");
+        }
+
 
         // Find the RecyclerView in the fragment layout
         recyclerView = rootView.findViewById(R.id.cueRecyclerView);

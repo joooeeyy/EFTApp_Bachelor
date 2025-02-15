@@ -145,6 +145,38 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Add this below the long_term_goal CardView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:padding="16dp">
+
+            <!-- TextView for Future Events Left -->
+            <TextView
+                android:id="@+id/cues_left_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Future Events Left: 2"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- TextView for Time Till Next Poll -->
+            <TextView
+                android:id="@+id/days_till_poll_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next Poll in: 7 days"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+
+
+
     </LinearLayout>
 
 </FrameLayout>

@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 
 import okhttp3.Response;
 
-@Database(entities = {Cue.class}, version = 3)
+@Database(entities = {Cue.class}, version = 4,exportSchema = false)
 public abstract class CueDatabase extends RoomDatabase {
     private static CueDatabase INSTANCE;
     public abstract CueDao cueDao();

@@ -70,15 +70,15 @@
                 android:id="@+id/deleteButton"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_marginEnd="11dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:contentDescription="Delete"
+                android:focusable="true"
                 android:src="@drawable/ic_delete"
-            android:contentDescription="Delete"
-            android:clickable="true"
-            android:focusable="true"
-            app:tint="@color/red"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@color/red" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

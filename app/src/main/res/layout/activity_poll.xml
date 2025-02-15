@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Feedback will appear here"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:gravity="center"
         android:padding="8dp"
         android:layout_marginBottom="16dp" />
@@ -88,5 +88,37 @@
             android:layout_marginBottom="8dp" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/finishPollButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finish Poll"
+            android:visibility="gone"
+            android:onClick="onFinishPollClicked" />
+    </LinearLayout>
+
+    <!-- Loading Overlay -->
+    <RelativeLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <!-- Circular ProgressBar to show loading -->
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
 
 </LinearLayout>

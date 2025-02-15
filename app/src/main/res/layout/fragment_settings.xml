@@ -1,58 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".activities.SettingsFragment">
 
-    <!-- Gender Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settings_toolbar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingVertical="8dp">
+        android:background="?attr/colorPrimary"
+        android:title="Settings"
+        android:titleTextColor="@android:color/white"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Gender Label -->
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Gender"
-            android:textSize="16sp" />
+    <!-- Gender Row -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/genderCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/settings_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Gender Selector -->
-        <Spinner
-            android:id="@+id/spinnerGender"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/genderRow"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingVertical="12dp">
+
+            <!-- Gender Label -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Gender"
+                android:textSize="16sp" />
+
+            <!-- Gender Selector -->
+            <Spinner
+                android:id="@+id/spinnerGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- Language Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/languageCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingVertical="8dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/genderCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Language Label -->
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/languageRow"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Language"
-            android:textSize="16sp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingVertical="12dp">
 
-        <!-- Language Selector -->
-        <Spinner
-            android:id="@+id/spinnerLanguage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>
+            <!-- Language Label -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Language"
+                android:textSize="16sp" />
 
-</LinearLayout>
+            <!-- Language Selector -->
+            <Spinner
+                android:id="@+id/spinnerLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Developer Button -->
+    <Button
+        android:id="@+id/developerButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Developer Button"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/languageCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

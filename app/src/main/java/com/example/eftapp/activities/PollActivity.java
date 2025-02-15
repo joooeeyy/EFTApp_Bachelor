@@ -1,39 +1,27 @@
 package com.example.eftapp.activities;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eftapp.R;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import util.AdjustingAmountPoll;
-import util.BelohnungsaufschubPoll;
+import ViewModel.PollViewModel;
 import util.Poll;
-import util.PollManager;
-import util.TSRQPoll;
 
 public class PollActivity extends AppCompatActivity {
 
     private TextView questionText, feedbackText;
     private Button[] answerButtons = new Button[7]; // Update to 7 buttons
-
-    private List<Poll> pollQueue;
-    private int currentPollIndex = 0;
-    private Poll currentPoll;
-
-    // Store final results here
-    private ArrayList<String> pollResults = new ArrayList();
+    private Button finishPollButton;  // Add the finish button
+    private PollViewModel pollViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +29,10 @@ public class PollActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_poll);
 
-        SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String savedGoal = preferences.getString("questions", null);
-
         questionText = findViewById(R.id.question);
         feedbackText = findViewById(R.id.feedback);
 
-        // Initialize the 7 answer buttons
+        // Initialize answer buttons
         answerButtons[0] = findViewById(R.id.btn_left);
         answerButtons[1] = findViewById(R.id.btn_middle_left);
         answerButtons[2] = findViewById(R.id.btn_middle);
@@ -56,85 +41,90 @@ public class PollActivity extends AppCompatActivity {
         answerButtons[5] = findViewById(R.id.btn_right_more);
         answerButtons[6] = findViewById(R.id.btn_right_most);
 
-        PollManager pollManager = new PollManager(this);
+        // Initialize the finish poll button
+        finishPollButton = findViewById(R.id.finishPollButton);
 
-        // Add polls to queue
-        pollQueue = new ArrayList<>();
-        pollQueue.add(pollManager.createPoll("AdjustingAmount"));
-        pollQueue.add(pollManager.createPoll("Belohnungsaufschub"));
-        pollQueue.add(pollManager.createPoll("TSRQ"));
+        // Initialize ViewModel
+        pollViewModel = new ViewModelProvider(this).get(PollViewModel.class);
 
-        // Start with the first poll
-        currentPollIndex = 0;
-        currentPoll = pollQueue.get(currentPollIndex);
-        updateUI();
+        // Observe changes to the currentPoll and feedbackText
+        pollViewModel.getCurrentPoll().observe(this, poll -> {
+            if (poll != null) {
+                questionText.setText(poll.getCurrentQuestion());
+                updateAnswerButtons(poll);
+            } else {
+                questionText.setText("Poll FINISHED");
+            }
+        });
 
-        // Set onClickListeners for the answer buttons
+        pollViewModel.getFeedbackText().observe(this, feedback -> {
+            feedbackText.setText(feedback);
+        });
+
+        pollViewModel.isPollSessionComplete().observe(this, isComplete -> {
+            if (isComplete) {
+                hideAnswerButtons();  // Hide all buttons when the poll session is complete
+                questionText.setText("");
+                finishPollButton.setVisibility(View.VISIBLE);  // Show the finish button
+            }
+        });
+
+        // Set up answer button listeners
         for (int i = 0; i < answerButtons.length; i++) {
             final int index = i;
-            answerButtons[i].setOnClickListener(view -> handleAnswer(index));
+            answerButtons[i].setOnClickListener(view -> pollViewModel.handleAnswer(index));
         }
-    }
 
-    private void handleAnswer(int answerIndex) {
-        if (currentPoll == null || currentPoll.isComplete()) return;
-
-        currentPoll.handleAnswer(answerIndex);
-
-        if (currentPoll.isComplete()) {
-            // Save the final result for the completed poll
-            pollResults.add(
-
-                    currentPoll.getFeedback() // Save final feedback as result
-            );
-
-            feedbackText.setText("Poll Complete: " + currentPoll.getFeedback());
-            currentPollIndex++;
-            if (currentPollIndex < pollQueue.size()) {
-                currentPoll = pollQueue.get(currentPollIndex);
-                updateUI();
+        pollViewModel.fetchApiCallLiveData().observe(this, success -> {
+            if (success) {
+                showLoading(false);
+                finish();
             } else {
-                endPollingSession();
+                showLoading(false);
+                Toast.makeText(getApplicationContext(), "Poll Results failed, please check " +
+                        "Internet connection.", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        // Set listener for finish poll button
+        finishPollButton.setOnClickListener(view -> {
+            // You can handle the finish action here
+            pollViewModel.setPollDate();
+            pollViewModel.sendPollResultToBackend();
+            showLoading(true);
+
+        });
+    }
+
+    private void updateAnswerButtons(Poll poll) {
+        String[] answers = poll.getAnswerChoices();
+        for (int i = 0; i < answerButtons.length; i++) {
+            if (i < answers.length) {
+                answerButtons[i].setVisibility(View.VISIBLE);
+                answerButtons[i].setText(answers[i]);
+            } else {
+                answerButtons[i].setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void hideAnswerButtons() {
+        for (Button b : answerButtons) {
+            b.setVisibility(View.GONE);
+        }
+    }
+
+    private void finishPollSession() {
+        // Handle the end of the poll session here (e.g., close activity, show summary, etc.)
+        finish();  // Close the activity (or you can do something else)
+    }
+
+    private void showLoading(boolean isLoading) {
+        RelativeLayout loadingOverlay = findViewById(R.id.loadingOverlay);
+        if (isLoading) {
+            loadingOverlay.setVisibility(View.VISIBLE); // Show overlay
         } else {
-            updateUI();
-        }
-    }
-
-    private void updateUI() {
-        if (currentPoll != null) {
-            questionText.setText(currentPoll.getCurrentQuestion());
-            feedbackText.setText(currentPoll.getFeedback());
-
-            String[] answers = currentPoll.getAnswerChoices();
-            for (int i = 0; i < answerButtons.length; i++) {
-                if (i < answers.length) {
-                    answerButtons[i].setVisibility(View.VISIBLE);
-                    answerButtons[i].setText(answers[i]);
-                } else {
-                    answerButtons[i].setVisibility(View.GONE);
-                }
-            }
-        }
-    }
-
-    private void endPollingSession() {
-        questionText.setText("Thank you for completing all polls!");
-
-        String results = "";
-        for (Poll p : pollQueue) {
-            results += p.getPollMethod() + ": ";
-            for (double d : p.getTotalScore()){
-                results += d + " ";
-            }
-            results += "\n";
-        }
-
-        feedbackText.setText("Your responses have been recorded. Results are: "  +
-                results);
-
-        for (Button button : answerButtons) {
-            button.setVisibility(View.GONE);
+            loadingOverlay.setVisibility(View.GONE); // Hide overlay
         }
     }
 }

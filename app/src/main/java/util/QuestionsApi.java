@@ -40,12 +40,11 @@ public class QuestionsApi {
     }
 
 
-    public void getAiQuestions(String goalInput, int userId) {
+    public void getAiQuestions(String goalInput, String age, String gender, int userId) {
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
 
-
-        //Questions with longterm goal
+        // Questions with long-term goal
         String prompt = prompText + goalInput;
 
         try {
@@ -79,8 +78,7 @@ public class QuestionsApi {
                     String text = jsonResponse.getString("text");
                     Log.d("ApiCallback", "Received questions: " + text);
 
-
-                    sendAddUserIdRequest(userId, new ApiResponseCallback() {
+                    sendAddUserIdRequest(userId, age, gender, new ApiResponseCallback() {
                         @Override
                         public void onSuccess(String questions) {
                             callback.onSuccess(text);
@@ -89,7 +87,7 @@ public class QuestionsApi {
                         @Override
                         public void onError(Exception e) {
                             Log.e("AddUserId", "Failed to add user_id", e);
-                            callback.onError(e); // Notify the main callback of the failure
+                            callback.onError(e);
                         }
                     });
                     callback.onSuccess(text);
@@ -100,14 +98,16 @@ public class QuestionsApi {
                 }
             }
         });
-
     }
 
     // Function to send the "add user" request
-    private void sendAddUserIdRequest(Integer userId, ApiResponseCallback userCallback) {
+    // Function to send the "add user" request with age and gender
+    private void sendAddUserIdRequest(Integer userId, String age, String gender, ApiResponseCallback userCallback) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("user_id", userId);
+            jsonObject.put("userid", userId);
+            jsonObject.put("age", age);
+            jsonObject.put("gender", gender);
         } catch (JSONException e) {
             e.printStackTrace();
             userCallback.onError(e);
@@ -126,7 +126,7 @@ public class QuestionsApi {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                userCallback.onError(new Exception("Failed")); // Notify the caller of the failure
+                userCallback.onError(new Exception("Failed"));
             }
 
             @Override

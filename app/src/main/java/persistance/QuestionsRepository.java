@@ -19,10 +19,10 @@ public class QuestionsRepository {
     }
 
     // Fetch the questions using the API
-    public void getAiQuestions(String goalInput, QuestionsApi.ApiResponseCallback callback) {
+    public void getAiQuestions(String goalInput, String age, String gender, QuestionsApi.ApiResponseCallback callback) {
         QuestionsApi questionsApi = new QuestionsApi(context, callback);
-        goal = goalInput;
-        questionsApi.getAiQuestions(goalInput, userId);
+        this.goal = goalInput;
+        questionsApi.getAiQuestions(goalInput, age, gender, userId);
     }
 
     // Save the questions string into SharedPreferences
