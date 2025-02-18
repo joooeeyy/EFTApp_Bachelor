@@ -13,9 +13,8 @@ public class PollManager {
     private static final String LAST_RESET_TIME_KEY = "last_reset_time"; // New key for tracking last reset time
 
     public static final long ONE_WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
-    public static final int FUTURE_EVENTS_PER_DAY = 2;
-
-    private static final long TEN_MINUTES_MILLIS = 10 * 60 * 1000; // 10 minutes in milliseconds
+    public static final long FOUR_DAYS_MILLIS = 4 * 24 * 60 * 60 * 1000L; // 4 days in milliseconds
+    public static final int FUTURE_EVENTS_PER_DAY = 2; // Default number of future events per day
 
     public PollManager(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -44,6 +43,9 @@ public class PollManager {
         }
     }
 
+    /**
+     * Saves the current time as the first poll date in SharedPreferences.
+     */
     public static void saveFirstPollDate(Context context) {
         long currentTime = System.currentTimeMillis(); // Get the current time in milliseconds
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -52,11 +54,21 @@ public class PollManager {
         editor.apply();
     }
 
+    /**
+     * Retrieves the first poll date from SharedPreferences.
+     *
+     * @return The first poll date in milliseconds, or -1 if not found.
+     */
     public static long getFirstPollDate(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return preferences.getLong(FIRST_POLL_DATE_KEY, -1); // Return -1 if not found
     }
 
+    /**
+     * Checks if the poll should be shown again based on the time since the first poll.
+     *
+     * @return True if the poll should be shown again, false otherwise.
+     */
     public static boolean shouldShowPollAgain(Context context) {
         long firstPollDate = getFirstPollDate(context);
         if (firstPollDate == -1) {
@@ -66,10 +78,14 @@ public class PollManager {
         long currentTime = System.currentTimeMillis();
         long timeDifference = currentTime - firstPollDate;
 
-        // If more than a week has passed, show the poll again
-        return timeDifference >= ONE_WEEK_MILLIS;
+        // If more than 4 days have passed, show the poll again
+        return timeDifference >= FOUR_DAYS_MILLIS;
     }
 
+    /**
+     * Retrieves the number of future events left from SharedPreferences.
+     * Resets the count if midnight has passed since the last reset.
+     */
     public static int getFutureEventsLeft(Context context) {
         // Reset future events if needed (e.g., at midnight)
         resetFutureEventsIfNeeded(context);
@@ -78,6 +94,9 @@ public class PollManager {
         return preferences.getInt("future_events_left", FUTURE_EVENTS_PER_DAY); // Default to 2
     }
 
+    /**
+     * Updates the number of future events left in SharedPreferences.
+     */
     public static void setFutureEventsLeft(Context context, int futureEventsLeft) {
         SharedPreferences preferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -124,6 +143,9 @@ public class PollManager {
                 currentCalendar.get(Calendar.YEAR) > lastResetCalendar.get(Calendar.YEAR);
     }
 
+    /**
+     * Formats a long string into an array of strings using newlines as delimiters.
+     */
     private String[] formatString(String longString) {
         // Split the string into an array of strings using one or more newlines
         return longString.split("\n+");

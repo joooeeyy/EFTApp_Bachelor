@@ -48,9 +48,8 @@ public class HomeFragment extends Fragment implements CueAdapter.OnItemClickList
             activity.setSupportActionBar(toolbar);
             // Use ContextCompat to get the color
             toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
-            toolbar.setTitle("Future Events Hub");
+            toolbar.setTitle("Mental Movie Hub");
         }
-
 
         // Find the RecyclerView in the fragment layout
         recyclerView = rootView.findViewById(R.id.cueRecyclerView);
@@ -63,7 +62,7 @@ public class HomeFragment extends Fragment implements CueAdapter.OnItemClickList
         }, cueId -> {
             cueViewModel.getCue(cueId).observe(getViewLifecycleOwner(), cue -> {
                 if (cue != null) {
-                    cueViewModel.deleteCue(cue);
+                    cueViewModel.deleteCue(cue); // This will now delete the files as well
                 }
             });
         });

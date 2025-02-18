@@ -6,21 +6,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eftapp.R;
 
-import ViewModel.ApiViewModel;
 import ViewModel.QuestionsViewModel;
-
 
 public class GoalActivity extends AppCompatActivity {
 
@@ -43,7 +39,6 @@ public class GoalActivity extends AppCompatActivity {
         longTermGoalInput = findViewById(R.id.long_term_goal_input);
         genderInput = findViewById(R.id.gender_radio_group);
         ageInput = findViewById(R.id.age_input);
-
         submitButton = findViewById(R.id.submit_button);
 
         questionsViewModel = new ViewModelProvider(this).get(QuestionsViewModel.class);
@@ -56,7 +51,7 @@ public class GoalActivity extends AppCompatActivity {
                     showLoading(false);
                     finish();
                 } else {
-
+                    // Handle failure
                 }
             }
         });
@@ -72,8 +67,10 @@ public class GoalActivity extends AppCompatActivity {
                 gender = "male";
             } else if (selectedGenderId == R.id.female_radio_button) {
                 gender = "female";
+            } else if (selectedGenderId == R.id.neutral_radio_button) {
+                gender = "neutral"; // Handle gender-neutral option
             } else {
-                gender = "other"; // or handle as per your requirements
+                gender = ""; // No gender selected
             }
 
             if (goal.isEmpty() || age.isEmpty() || gender.isEmpty()) {
@@ -92,9 +89,6 @@ public class GoalActivity extends AppCompatActivity {
                     .setNegativeButton("Cancel", null)
                     .show();
         });
-
-
-
     }
 
     private void showLoading(boolean isLoading) {

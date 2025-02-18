@@ -11,19 +11,22 @@ import androidx.lifecycle.MutableLiveData;
 import persistance.Cue;
 import persistance.CueRepository;
 import util.EftApi;
+import util.UserManager;
 
 public class ReflectionViewModel extends AndroidViewModel {
     private CueRepository cueRepository;
     private LiveData<Cue> cueLiveData;
     private EftApi eftApi;
     private MutableLiveData<Boolean> isAnswerCorrect = new MutableLiveData<>();
+    private int userId;
 
     public ReflectionViewModel(@NonNull Application application) {
         super(application);
         cueRepository = new CueRepository(application);
 
         // Initialize EftApi with a userId (you can pass this via a method)
-        int userId = 1; // Replace with actual userId
+        UserManager userManager = new UserManager(application);
+        this.userId = userManager.getUserId();
         eftApi = new EftApi(new EftApi.ApiResponseCallback() {
             @Override
             public void onSuccess(String[] titleAndText, byte[] audioData, byte[] image) {

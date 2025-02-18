@@ -6,8 +6,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.eftapp.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,30 +17,23 @@ import util.UserManager;
 public class PollViewModel extends AndroidViewModel implements PollApi.PollApiCallback {
 
     private MutableLiveData<Poll> currentPoll = new MutableLiveData<>();
-    private MutableLiveData<String> feedbackText = new MutableLiveData<>();
     private ArrayList<Double> pollResults = new ArrayList<>();
     private MutableLiveData<Boolean> isPollSessionComplete = new MutableLiveData<>(false);  // New LiveData to track session end
     private List<Poll> pollQueue = new ArrayList<>();
     private final MutableLiveData<Boolean> pollApiResult = new MutableLiveData<>();
     private int userId;
     private int currentPollIndex = 0;
-    private String endPollText;
 
     public PollViewModel(Application application) {
         super(application);
         UserManager userManager = new UserManager(application);
         this.userId = userManager.getUserId();
 
-        endPollText = application.getString(R.string.endPollText);
         startPollSession(application);
     }
 
     public LiveData<Poll> getCurrentPoll() {
         return currentPoll;
-    }
-
-    public LiveData<String> getFeedbackText() {
-        return feedbackText;
     }
 
     public LiveData<Boolean> isPollSessionComplete() { // Getter for the new LiveData
@@ -82,14 +73,7 @@ public class PollViewModel extends AndroidViewModel implements PollApi.PollApiCa
             if (currentPollIndex < pollQueue.size()) {
                 currentPoll.setValue(pollQueue.get(currentPollIndex));
             } else {
-                String resultsList = "";
-                for (Double d : pollResults) {
-                    resultsList += d;
-                    resultsList += "\n";
-                }
-
-                feedbackText.setValue(endPollText);
-                isPollSessionComplete.setValue(true);
+                isPollSessionComplete.setValue(true); // Signal that the poll session is complete
             }
         } else {
             currentPoll.setValue(poll); // Update poll state

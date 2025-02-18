@@ -76,6 +76,7 @@
             app:layout_constraintBottom_toTopOf="@id/audioSeekBar"
             android:layout_marginBottom="24dp">
 
+            <!-- Play Button -->
             <Button
                 android:id="@+id/playButton"
                 android:layout_width="wrap_content"
@@ -87,6 +88,7 @@
                 android:onClick="play"
                 app:backgroundTint="@null" />
 
+            <!-- Pause Button -->
             <Button
                 android:id="@+id/pauseButton"
                 android:layout_width="wrap_content"
@@ -98,6 +100,20 @@
                 android:minHeight="30dp"
                 android:background="@drawable/ic_pause"
                 app:backgroundTint="@null" />
+
+            <!-- Story Text Button -->
+            <Button
+                android:id="@+id/storyTextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:onClick="showStoryText"
+                android:padding="15dp"
+                android:minWidth="60dp"
+                android:minHeight="30dp"
+                android:background="@drawable/ic_show_text"
+                app:backgroundTint="@null"
+                />
         </LinearLayout>
 
         <!-- SeekBar for audio track position -->

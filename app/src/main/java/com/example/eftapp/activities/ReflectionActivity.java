@@ -188,14 +188,33 @@ public class ReflectionActivity extends AppCompatActivity {
         }
     }
 
+    public void showStoryText(View view) {
+        Cue cue = reflectionViewModel.getCue().getValue();
+        if (cue != null) {
+            showStoryPopup(cue.getText());
+        } else {
+            Toast.makeText(this, "Story text not available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (storyDialog != null && storyDialog.isShowing()) {
+            storyDialog.dismiss();
+        }
+        if (questionDialog != null && questionDialog.isShowing()) {
+            questionDialog.dismiss();
+        }
         seekBarHandler.removeCallbacks(updateSeekBarTask);
         audioPlayer.releasePlayer();
     }
 
     private void showStoryPopup(String storyText) {
+        if (isFinishing() || isDestroyed()) {
+            return; // Do not show the dialog if the Activity is finishing or destroyed
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_story, null);
         TextView storyTextView = dialogView.findViewById(R.id.storyTextView);
@@ -203,14 +222,18 @@ public class ReflectionActivity extends AppCompatActivity {
         storyTextView.setText(storyText);
 
         builder.setView(dialogView)
-                .setTitle("Story")
-                .setPositiveButton("Close", (dialog, which) -> dialog.dismiss());
+                .setTitle("Written Text")
+                .setPositiveButton("Hide", (dialog, which) -> dialog.dismiss());
 
         storyDialog = builder.create();
         storyDialog.show();
     }
 
     private void showQuestionPopup(String question, String answers, String solution) {
+        if (isFinishing() || isDestroyed()) {
+            return; // Do not show the dialog if the Activity is finishing or destroyed
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Question: " + question)
                 .setCancelable(false); // Prevent dismissing by clicking outside
@@ -243,6 +266,11 @@ public class ReflectionActivity extends AppCompatActivity {
         if (selectedLetter.equalsIgnoreCase(correctAnswer)) {
             // Correct answer
             reflectionViewModel.checkAnswer(selectedAnswer, solution);
+
+            // Dismiss the dialog if the Activity is finishing
+            if (questionDialog != null && questionDialog.isShowing()) {
+                questionDialog.dismiss();
+            }
         } else {
             // Incorrect answer
             Toast.makeText(this, "Incorrect answer. Please listen again.", Toast.LENGTH_SHORT).show();

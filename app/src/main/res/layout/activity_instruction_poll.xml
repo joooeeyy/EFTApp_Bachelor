@@ -13,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:paddingStart="16dp"
         android:text="Poll Instructions and Information"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -22,46 +21,62 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Poll Duration and How to Answer -->
-
-    <!-- Submitting Responses and Canceling or Repeating -->
-    <TextView
-        android:id="@+id/poll_info"
-        android:layout_width="wrap_content"
+    <!-- Single CardView for All Text -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_poll_info"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:paddingStart="16dp"
-        android:text="• The poll will take 5 to 10 minutes to complete."
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/poll_instructions_title" />
-
-    <TextView
-        android:id="@+id/submitting_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:paddingStart="16dp"
-        android:text="• All responses will only be submitted at the end of the poll when you confirm your completion.\n\n• If at any point you wish to cancel or start over, you can use the Back button to exit the poll. You can then return to the poll and begin again."
-        android:textSize="16sp"
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/poll_info" />
+        app:layout_constraintTop_toBottomOf="@id/poll_instructions_title">
 
-    <!-- Two-Time Participation Requirement -->
-    <TextView
-        android:id="@+id/two_time_participation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:paddingStart="16dp"
-        android:text="• To gather accurate and consistent feedback, we ask that you complete this poll twice:\n   1. First Time: Now.\n   2. Second Time: One week after completing the first poll."
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/submitting_cancel" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Poll Duration -->
+            <TextView
+                android:id="@+id/poll_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• Takes between 5 and 10 minutes."
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Submitting Responses -->
+            <TextView
+                android:id="@+id/submitting_responses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• Poll Results only submitted after you confirm at the end ."
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Canceling or Restarting -->
+            <TextView
+                android:id="@+id/canceling_restarting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• Use the Back button to cancel or restart."
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Two-Time Participation -->
+            <TextView
+                android:id="@+id/two_time_participation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• For the study, complete the poll twice:\n   1. First time: Now.\n   2. Second time: One week later."
+                android:textSize="16sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- Start Poll Button -->
     <Button
@@ -70,10 +85,9 @@
         android:layout_height="wrap_content"
         android:text="Start Poll"
         android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/two_time_participation"
+        app:layout_constraintTop_toBottomOf="@id/card_poll_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="32dp"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

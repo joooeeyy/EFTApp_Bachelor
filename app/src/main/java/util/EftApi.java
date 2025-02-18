@@ -27,7 +27,7 @@ public class EftApi {
     private static final String TTS_URL = "https://chagpteft.onrender.com/text-to-speech";
     private static final String IMAGE_URL = "https://chagpteft.onrender.com/generate-image";
     private static final String RETENTION_URL = "https://chagpteft.onrender.com/add-retention";
-    private final String cueTextPrompt = "Create a 100 long word story using Easy-to-understand vocabulary and phrasing. Avoid using\n" +
+    private final String cueTextPrompt = "Create a 300 long word story using Easy-to-understand vocabulary and phrasing. Avoid using\n" +
             "        names at all except if it is specified in the \"who is there:\" section.\n" +
             "\n" +
             "At the end, put a trivial question regarding the first paragraph of the story. Provide:\n" +
@@ -38,7 +38,7 @@ public class EftApi {
             "\n" +
             "Provide a title for the story at the top.\n" +
             "\n" +
-            "Base the story on those factors:";
+            "Base the story on those factors (If the answers are in German, produce the story text in German):";
     private final String cueImagePrompt = "Make a simplistic enviroment picture as motivation without using any humans or animals, which fits the following text: ";
     private int userId;
 
@@ -56,7 +56,7 @@ public class EftApi {
     }
 
     // First API call to get text response
-    public void aiTextResponse(ArrayList<String> inputs) {
+    public void aiTextResponse(ArrayList<String> inputs, String voiceSetting) {
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
 
@@ -101,7 +101,7 @@ public class EftApi {
                     Log.d("ApiCallback", "Received text: " + text);
 
                     // Once we get the text, make the second API call to get the audio file
-                    requestTextToSpeech(text);
+                    requestTextToSpeech(text, voiceSetting);
 
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -111,7 +111,7 @@ public class EftApi {
     }
 
     // Second API call to convert the text to speech (audio)
-    private void requestTextToSpeech(String input) {
+    private void requestTextToSpeech(String input, String voiceSetting) {
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
 
@@ -119,9 +119,11 @@ public class EftApi {
 
         String text = titleAndText[1];
 
+        Log.d("voiceSetting", voiceSetting);
+
         try {
             jsonObject.put("speed", 1);
-            jsonObject.put("speaker", "63b407db241a82001d51b9f5");
+            jsonObject.put("speaker", voiceSetting);
             jsonObject.put("text", text + "\n");
         } catch (JSONException e) {
             e.printStackTrace();

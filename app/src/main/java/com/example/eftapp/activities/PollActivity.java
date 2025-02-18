@@ -18,7 +18,7 @@ import util.Poll;
 
 public class PollActivity extends AppCompatActivity {
 
-    private TextView questionText, feedbackText;
+    private TextView questionText, pollFinishedText;
     private Button[] answerButtons = new Button[7]; // Update to 7 buttons
     private Button finishPollButton;  // Add the finish button
     private PollViewModel pollViewModel;
@@ -30,7 +30,7 @@ public class PollActivity extends AppCompatActivity {
         setContentView(R.layout.activity_poll);
 
         questionText = findViewById(R.id.question);
-        feedbackText = findViewById(R.id.feedback);
+        pollFinishedText = findViewById(R.id.pollFinishedText);
 
         // Initialize answer buttons
         answerButtons[0] = findViewById(R.id.btn_left);
@@ -47,7 +47,7 @@ public class PollActivity extends AppCompatActivity {
         // Initialize ViewModel
         pollViewModel = new ViewModelProvider(this).get(PollViewModel.class);
 
-        // Observe changes to the currentPoll and feedbackText
+        // Observe changes to the currentPoll
         pollViewModel.getCurrentPoll().observe(this, poll -> {
             if (poll != null) {
                 questionText.setText(poll.getCurrentQuestion());
@@ -57,14 +57,11 @@ public class PollActivity extends AppCompatActivity {
             }
         });
 
-        pollViewModel.getFeedbackText().observe(this, feedback -> {
-            feedbackText.setText(feedback);
-        });
-
         pollViewModel.isPollSessionComplete().observe(this, isComplete -> {
             if (isComplete) {
                 hideAnswerButtons();  // Hide all buttons when the poll session is complete
                 questionText.setText("");
+                pollFinishedText.setVisibility(View.VISIBLE);  // Show the "Poll Finished" message
                 finishPollButton.setVisibility(View.VISIBLE);  // Show the finish button
             }
         });
@@ -92,7 +89,6 @@ public class PollActivity extends AppCompatActivity {
             pollViewModel.setPollDate();
             pollViewModel.sendPollResultToBackend();
             showLoading(true);
-
         });
     }
 
@@ -112,11 +108,6 @@ public class PollActivity extends AppCompatActivity {
         for (Button b : answerButtons) {
             b.setVisibility(View.GONE);
         }
-    }
-
-    private void finishPollSession() {
-        // Handle the end of the poll session here (e.g., close activity, show summary, etc.)
-        finish();  // Close the activity (or you can do something else)
     }
 
     private void showLoading(boolean isLoading) {

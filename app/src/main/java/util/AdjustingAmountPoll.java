@@ -5,7 +5,7 @@ public class AdjustingAmountPoll implements Poll {
     private double immediateAmount; // Start with half of the delayed reward
     private final double delayedAmount; // Fixed delayed reward ($100)
     private final double adjustmentFactor = 0.5; // Adjustment halves each time
-    private final double threshold = 0.01; // Smaller threshold for finer precision
+    private final double threshold = 0.1; // Smaller threshold for finer precision
     private final double minAdjustmentStep = 0.10; // Minimum adjustment step
     private int delayInMonths = 1; // Delay in months (e.g., 1 month)
     private double adjustmentStep; // Initial adjustment step size

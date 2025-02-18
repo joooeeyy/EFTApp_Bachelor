@@ -65,12 +65,12 @@
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/automatic_icon" />
+                        android:src="@drawable/mental_movie" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/ai_generated"
+                        android:text="@string/generate_event_text"
                         android:textSize="18sp"
                         android:textColor="@android:color/black"
                         android:layout_marginTop="8dp"/>
@@ -145,38 +145,103 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Add this below the long_term_goal CardView -->
+        <!-- Vertical Layout for Information Cards -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="16dp"
-            android:padding="16dp">
+            android:padding="8dp"
+            android:background="@color/light_gray"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp">
 
-            <!-- TextView for Future Events Left -->
-            <TextView
-                android:id="@+id/cues_left_text"
-                android:layout_width="wrap_content"
+            <!-- Card for Future Events Left -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Future Events Left: 2"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/white">
 
-            <!-- TextView for Time Till Next Poll -->
-            <TextView
-                android:id="@+id/days_till_poll_text"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/mental_movie"
+                    android:layout_marginEnd="8dp"/>
+                    <TextView
+                        android:id="@+id/cues_left_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mental Movies Left: 2"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Next Poll -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Next Poll in: 7 days"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_marginBottom="8dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/poll_icon"
+                    android:layout_marginEnd="8dp"/>
+                    <TextView
+                        android:id="@+id/days_till_poll_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Next Poll in: 7 days"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Day Count -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/day_count_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DAY 1"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-
-
-
     </LinearLayout>
-
 </FrameLayout>

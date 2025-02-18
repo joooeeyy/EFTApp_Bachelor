@@ -14,6 +14,7 @@ import persistance.Cue;
 import persistance.CueDao;
 import persistance.CueDatabase;
 import util.EftApi;
+import util.SettingsManager;
 import util.UserManager;
 
 public class CueApiRepository implements EftApi.ApiResponseCallback {
@@ -22,19 +23,24 @@ public class CueApiRepository implements EftApi.ApiResponseCallback {
     private CueDao cueDao;
     private ApiViewModel apiViewModel;
     private Context context;
+    private String voiceSetting;
 
     public CueApiRepository(Context context, ApiViewModel apiViewModel) {
         CueDatabase cueDatabase = CueDatabase.getInstance(context);
         this.cueDao = cueDatabase.cueDao();
         UserManager userManager = new UserManager(context);
         int userId = userManager.getUserId();
+
+        SettingsManager settingsManager = new SettingsManager(context);
+        voiceSetting = settingsManager.getValue();
+
         this.eftApi = new EftApi(this, userId);
         this.apiViewModel = apiViewModel;
         this.context = context;
     }
 
     public void fetchCueData(ArrayList<String> inputs) {
-        eftApi.aiTextResponse(inputs);
+        eftApi.aiTextResponse(inputs, voiceSetting);
     }
 
     @Override

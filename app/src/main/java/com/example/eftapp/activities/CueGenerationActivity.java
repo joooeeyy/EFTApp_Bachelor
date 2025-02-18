@@ -46,6 +46,8 @@ public class CueGenerationActivity extends AppCompatActivity {
     private TextView loadingMessage;
     private Handler handler;
     private Runnable changeMessage;
+    private Runnable timeoutRunnable; // Runnable to handle timeout
+    private static final long TIMEOUT_DURATION = 120000; // 120 seconds in milliseconds
     TextView instructionsText;
 
     @Override
@@ -75,7 +77,7 @@ public class CueGenerationActivity extends AppCompatActivity {
         String text = getString(R.string.cueInstruction);
         setIconText(text);
 
-        //LoadingMessage
+        // LoadingMessage
         loadingMessage = findViewById(R.id.loadingMessage);
         String[] messages = {"Generating...", "How's your day?", "Nearly finished!", "Hang tight!"};
         handler = new Handler();
@@ -91,6 +93,16 @@ public class CueGenerationActivity extends AppCompatActivity {
             }
         };
 
+        // Timeout Runnable
+        timeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // If this runs, it means the request took longer than 120 seconds
+                showLoading(false); // Hide loading screen
+                Toast.makeText(CueGenerationActivity.this, "Failed to fetch mental movie: Request timed out", Toast.LENGTH_LONG).show();
+            }
+        };
+
         // Initialize Popup component
         InfoPopup infoPopup = new InfoPopup(this);
 
@@ -98,7 +110,6 @@ public class CueGenerationActivity extends AppCompatActivity {
         submitButton.setEnabled(false);
 
         displayGoal.setText(getGoal());
-
 
         // Initialize ViewModel
         apiViewModel = new ViewModelProvider(this).get(ApiViewModel.class);
@@ -157,7 +168,6 @@ public class CueGenerationActivity extends AppCompatActivity {
         howQ.setOnClickListener(v -> infoPopup.showPopup(v, getString(R.string.how_instruction)));
         whatQ.setOnClickListener(v -> infoPopup.showPopup(v, getString(R.string.what_instruction)));
         whoQ.setOnClickListener(v -> infoPopup.showPopup(v, getString(R.string.who_instruction)));
-
     }
 
     public void submit(View view) {
@@ -171,6 +181,9 @@ public class CueGenerationActivity extends AppCompatActivity {
 
         // Show loading spinner while making the API call
         showLoading(true);
+
+        // Start the timeout handler
+        handler.postDelayed(timeoutRunnable, TIMEOUT_DURATION);
 
         // Make the API call to fetch text and audio
         apiViewModel.submitCue(inputs);
@@ -197,6 +210,10 @@ public class CueGenerationActivity extends AppCompatActivity {
             loadingOverlay.setVisibility(View.VISIBLE); // Show overlay
             submitButton.setEnabled(false); // Disable the button
         } else {
+            // Stop changing messages and remove the timeout callback
+            handler.removeCallbacks(changeMessage);
+            handler.removeCallbacks(timeoutRunnable);
+
             loadingOverlay.setVisibility(View.GONE); // Hide overlay
             submitButton.setEnabled(true); // Enable the button
         }

@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.example.eftapp.R;
 
+import java.util.Calendar;
+
 import util.PollManager;
 
 public class AddCueFragment extends Fragment {
@@ -26,9 +28,8 @@ public class AddCueFragment extends Fragment {
     private ActivityResultLauncher<Intent> cueActivityLauncher;
     private SharedPreferences preferences;
     private boolean isGoalSet;
-    private boolean isPollCompleted;
     private View aiOption, pollOption, goalOption;
-    private TextView cuesLeftText, daysTillPollText; // Add these variables
+    private TextView cuesLeftText, daysTillPollText, dayCountText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,8 +41,9 @@ public class AddCueFragment extends Fragment {
         aiOption = view.findViewById(R.id.ai_option);
         pollOption = view.findViewById(R.id.poll_option);
         goalOption = view.findViewById(R.id.long_term_goal);
-        cuesLeftText = view.findViewById(R.id.cues_left_text); // Initialize cuesLeftText
-        daysTillPollText = view.findViewById(R.id.days_till_poll_text); // Initialize daysTillPollText
+        cuesLeftText = view.findViewById(R.id.cues_left_text);
+        daysTillPollText = view.findViewById(R.id.days_till_poll_text);
+        dayCountText = view.findViewById(R.id.day_count_text);
 
         // Check the current status of goal and poll
         updateCardStatuses();
@@ -115,6 +117,7 @@ public class AddCueFragment extends Fragment {
             // Hide the TextViews
             cuesLeftText.setVisibility(View.GONE);
             daysTillPollText.setVisibility(View.GONE);
+            dayCountText.setVisibility(View.GONE);
         } else if (isGoalSet) {
             // If goal is set, hide the goal card
             goalOption.setVisibility(View.GONE);
@@ -122,21 +125,20 @@ public class AddCueFragment extends Fragment {
             // Show the TextViews
             cuesLeftText.setVisibility(View.VISIBLE);
             daysTillPollText.setVisibility(View.VISIBLE);
+            dayCountText.setVisibility(View.VISIBLE);
 
             // Update the TextViews with the correct values
             updateFutureEventsLeft();
             updateTimeTillNextPoll();
+            updateDayCount(); // Update the day count
 
+            // Enable or disable the AI option based on whether the poll is completed
             if (shouldShowPoll) {
-                // If poll is due, make Poll card visible and Add Cue card semi-transparent
-                pollOption.setAlpha(1.0f);
-                pollOption.setEnabled(true);
+                // If poll is due, gray out the AI option
                 aiOption.setAlpha(0.5f);
                 aiOption.setEnabled(false);
             } else {
-                // If poll is completed, make Add Cue card visible and Poll card semi-transparent
-                pollOption.setAlpha(0.5f);
-                pollOption.setEnabled(false);
+                // If poll is completed, enable the AI option
                 aiOption.setAlpha(1.0f);
                 aiOption.setEnabled(true);
             }
@@ -158,20 +160,20 @@ public class AddCueFragment extends Fragment {
         int futureEventsLeft = preferences.getInt("future_events_left", 2); // Default to 2
 
         // Update the TextView
-        cuesLeftText.setText("Future Events Left: " + futureEventsLeft);
+        cuesLeftText.setText("Mental Movies Left to Reflect on: " + futureEventsLeft);
     }
 
     private void updateTimeTillNextPoll() {
         // Calculate the time till the next poll
         long firstPollDate = PollManager.getFirstPollDate(requireContext());
         if (firstPollDate == -1) {
-            daysTillPollText.setText("Next Poll: Not Scheduled");
+            daysTillPollText.setText("Next Poll: Poll not done yet");
             return;
         }
 
         long currentTime = System.currentTimeMillis();
         long timeDifference = currentTime - firstPollDate;
-        long timeTillNextPoll = PollManager.ONE_WEEK_MILLIS - timeDifference;
+        long timeTillNextPoll = PollManager.FOUR_DAYS_MILLIS - timeDifference;
 
         if (timeTillNextPoll <= 0) {
             daysTillPollText.setText("Next Poll: Due Now");
@@ -179,5 +181,34 @@ public class AddCueFragment extends Fragment {
             long daysTillNextPoll = timeTillNextPoll / (24 * 60 * 60 * 1000);
             daysTillPollText.setText("Next Poll in: " + daysTillNextPoll + " days");
         }
+    }
+
+    private void updateDayCount() {
+        long firstPollDate = PollManager.getFirstPollDate(requireContext());
+        if (firstPollDate == -1) {
+            // Poll hasn't been started yet
+            dayCountText.setText("DAY 0");
+            return;
+        }
+
+        long currentTime = System.currentTimeMillis();
+        Calendar firstPollCalendar = Calendar.getInstance();
+        firstPollCalendar.setTimeInMillis(firstPollDate);
+        firstPollCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        firstPollCalendar.set(Calendar.MINUTE, 0);
+        firstPollCalendar.set(Calendar.SECOND, 0);
+        firstPollCalendar.set(Calendar.MILLISECOND, 0);
+
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setTimeInMillis(currentTime);
+        currentCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        currentCalendar.set(Calendar.MINUTE, 0);
+        currentCalendar.set(Calendar.SECOND, 0);
+        currentCalendar.set(Calendar.MILLISECOND, 0);
+
+        long daysSinceFirstPoll = (currentCalendar.getTimeInMillis() - firstPollCalendar.getTimeInMillis()) / (24 * 60 * 60 * 1000);
+        int dayCount = (int) daysSinceFirstPoll + 1; // Add 1 to start counting from DAY 1
+
+        dayCountText.setText("DAY " + dayCount);
     }
 }

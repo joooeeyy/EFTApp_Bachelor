@@ -2,22 +2,29 @@
     <string name="app_name">EFTApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="manuel_generated">Self-Written</string>
-    <string name="ai_generated">AI Generated</string>
+    <string name="generate_event_text">Mental Movie</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
+    <!-- Gender options -->
     <string-array name="gender_options">
-        <item>Female</item>
         <item>Male</item>
-        <item>Neutral</item>
+        <item>Female</item>
     </string-array>
 
+    <!-- Language options -->
     <string-array name="language_options">
-        <item>German</item>
         <item>English</item>
+        <item>German</item>
+    </string-array>
+
+    <!-- Age options -->
+    <string-array name="age_options">
+        <item>Young</item>
+        <item>Mature</item>
     </string-array>
 
     <string name="poll">Poll</string>
@@ -25,46 +32,45 @@
     <string name="reflectionTitle">Reflection Session</string>
 
     <string name="reflectionDes">
-        Now that your event is ready, find a quiet spot, relax, and fully engage with the experience.
-        Listen to the audio track (2-3 minutes), with a picture to enhance the moment. You can pause,
-        resume, or skip parts anytime. Once finished, click the Finish button to return to the Future
-        Events Hub.
+        Find a quiet spot, relax, and engage fully. Listen to the audio (2-3 minutes) with a picture
+        to enhance the moment. You can pause and resume anytime.
     </string>
 
 
     <string name="cueInstruction">
     Think of this as building a “mental movie” of your success
-    related to your long term goal—one that’s so clear and real, it could actually happen.\n\n
-    Once you’ve thought of a meaningful event, describe it by completing the five input fields.\n
+    related to your long term goal—one that’s so clear and real, it could actually happen in the
+        future.\n\n
+
     If you’re unsure about anything, tap the "here" button for more guidance.\n\n
-    After submitting, you’ll be taken to the Future Events Hub, where your generated event\n
-    will appear as a card. Click Start on the card to see further instructions.
+
+        If you are unsatisfied with the voice, you can change it in the settings.
 </string>
 
 
-    <string name="subject_instruction">
-    "In this field, describe the long-term goal you want to achieve (e.g., weight loss, working hard for future rewards, overcoming procrastination) and the context in which the cue applies."
-</string>
 
     <string name="where_instruction">
-    "In this field, describe where the cue or future event takes place (e.g., Spain, at the beach, in a meeting). The more specific the location, the more personalized the story will be."
+    "In this field, describe where the mental movie takes place (e.g., Spain, at the beach, in a meeting). The more specific the location, the more personalized the story will be."
 </string>
 
     <string name="when_instruction">
-    "In this field, specify when the cue or future event takes place (e.g., in one month, one year, tomorrow). The more precise the time, the more tailored the story becomes."
+    "In this field, specify when the mental movie takes place (e.g., in one month, one year, tomorrow). The more precise the time, the more tailored the story becomes."
 </string>
 
     <string name="how_instruction">
-    "In this field, describe the emotional or physical state during the event (e.g., feeling happy, full of adrenaline, stressed, sweaty). The more vivid, the more immersive the story becomes."
+    "In this field, describe the action you are performing during the mental movie (e.g., running, swimming, presenting, hiking). The more specific, the more immersive and personalized the story becomes."
 </string>
+
 
     <string name="what_instruction">
-    "In this field, describe what you are doing during the event (e.g., swimming, skydiving, scuba diving, working out, jogging). The more specific, the more personalized the story becomes."
+    "In this field, describe the objects you are noticing during the mental movie (e.g., trees, glasses, a laptop, waves, a coffee cup). The more specific, the more vivid and immersive the story becomes."
 </string>
 
+
     <string name="who_instruction">
-    "In this field, describe who is involved in the event (e.g., yourself, your girlfriend, family). Providing names makes the story more personalized."
+    "In this field, describe who is involved in the mental movie (e.g., yourself, your girlfriend, family). Providing names makes the story more personalized."
 </string>
+
 
     <string name="tsrq_poll_questions">
         <![CDATA[
