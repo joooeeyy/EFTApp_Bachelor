@@ -15,6 +15,7 @@ import com.example.eftapp.R;
 
 import ViewModel.PollViewModel;
 import util.Poll;
+import util.PollManager;
 
 public class PollActivity extends AppCompatActivity {
 
@@ -85,9 +86,13 @@ public class PollActivity extends AppCompatActivity {
 
         // Set listener for finish poll button
         finishPollButton.setOnClickListener(view -> {
+            // Save the poll start date when the poll is first taken
+            PollManager.savePollStartDate(this);
+
             // You can handle the finish action here
             pollViewModel.setPollDate();
             pollViewModel.sendPollResultToBackend();
+
             showLoading(true);
         });
     }

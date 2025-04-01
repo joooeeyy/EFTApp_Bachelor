@@ -44,6 +44,11 @@ public class ReflectionViewModel extends AndroidViewModel {
                 // Retention request failed
                 Log.e("ReflectionViewModel", "Failed to send retention data", e);
             }
+
+            @Override
+            public void onSuccess(String randomizedCue) {
+                // Not used for retention request
+            }
         }, userId);
     }
 

@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment implements CueAdapter.OnItemClickList
             activity.setSupportActionBar(toolbar);
             // Use ContextCompat to get the color
             toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
-            toolbar.setTitle("Mental Movie Hub");
+            toolbar.setTitle("Mental Movie Library");
         }
 
         // Find the RecyclerView in the fragment layout

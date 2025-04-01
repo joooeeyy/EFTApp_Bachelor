@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eftapp.R;
-
 import ViewModel.QuestionsViewModel;
 
 public class GoalActivity extends AppCompatActivity {
@@ -28,6 +27,8 @@ public class GoalActivity extends AppCompatActivity {
     private String goal;
     private String age;
     private String gender;
+
+    private static final String DEFAULT_GOAL_PREFIX = "I want to ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,50 @@ public class GoalActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Add TextWatcher to handle "I want to" logic
+        longTermGoalInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                String currentText = longTermGoalInput.getText().toString().trim();
+                if (currentText.isEmpty()) {
+                    // If the user clicked and it's empty, set to "I want to"
+                    longTermGoalInput.setText(DEFAULT_GOAL_PREFIX);
+                    longTermGoalInput.setSelection(longTermGoalInput.getText().length()); // Move cursor to the end
+                }
+            } else {
+                // If focus is lost and no text was typed, reset to the default hint
+                String currentText = longTermGoalInput.getText().toString().trim();
+                if (currentText.equals(DEFAULT_GOAL_PREFIX)) {
+                    longTermGoalInput.setText(""); // Reset to the hint if no input
+                }
+            }
+        });
+
+        longTermGoalInput.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Get the current text in the EditText
+                String input = longTermGoalInput.getText().toString();
+
+                // Only modify the text if it starts with "I want to" and prevent the infinite loop
+                if (input.startsWith(DEFAULT_GOAL_PREFIX)) {
+                    // Avoid resetting the text if it is already in the desired format
+                    if (!input.equals(DEFAULT_GOAL_PREFIX)) {
+                        longTermGoalInput.removeTextChangedListener(this); // Temporarily remove the TextWatcher
+                        longTermGoalInput.setText(input);  // Allow the user to type after "I want to"
+                        longTermGoalInput.setSelection(input.length()); // Keep the cursor at the end
+                        longTermGoalInput.addTextChangedListener(this); // Reattach the TextWatcher
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable editable) {}
+        });
+
 
         // Handle Submit Button Click
         submitButton.setOnClickListener(v -> {

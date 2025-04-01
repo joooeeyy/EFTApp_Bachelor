@@ -11,9 +11,14 @@ public class PollManager {
     private static final String PREFS_NAME = "MyPrefs";
     private static final String FIRST_POLL_DATE_KEY = "first_poll_date";
     private static final String LAST_RESET_TIME_KEY = "last_reset_time"; // New key for tracking last reset time
+    private static final String POLL_START_DATE_KEY = "poll_start_date"; // For tracking poll start date
 
     public static final long ONE_WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
-    public static final long FOUR_DAYS_MILLIS = 4 * 24 * 60 * 60 * 1000L; // 4 days in milliseconds
+
+    public static final long SIX_DAYS_MILLIS = 6 * 24 * 60 * 60 * 1000L;
+
+    public static final long FIVE_DAYS_MILLIS = 5 * 24 * 60 * 60 * 1000L;
+
     public static final int FUTURE_EVENTS_PER_DAY = 2; // Default number of future events per day
 
     public PollManager(Context context) {
@@ -55,6 +60,24 @@ public class PollManager {
     }
 
     /**
+     * Saves the current date (without time) as the poll start date in SharedPreferences.
+     */
+    public static void savePollStartDate(Context context) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        long startDateInMillis = calendar.getTimeInMillis();
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(POLL_START_DATE_KEY, startDateInMillis);
+        editor.apply();
+    }
+
+    /**
      * Retrieves the first poll date from SharedPreferences.
      *
      * @return The first poll date in milliseconds, or -1 if not found.
@@ -63,6 +86,15 @@ public class PollManager {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return preferences.getLong(FIRST_POLL_DATE_KEY, -1); // Return -1 if not found
     }
+
+    /**
+     * Retrieves the poll start date from SharedPreferences.
+     */
+    public static long getPollStartDate(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return preferences.getLong(POLL_START_DATE_KEY, -1);
+    }
+
 
     /**
      * Checks if the poll should be shown again based on the time since the first poll.
@@ -78,8 +110,8 @@ public class PollManager {
         long currentTime = System.currentTimeMillis();
         long timeDifference = currentTime - firstPollDate;
 
-        // If more than 4 days have passed, show the poll again
-        return timeDifference >= FOUR_DAYS_MILLIS;
+        // If more than 5 days have passed, show the poll again
+        return timeDifference >= FIVE_DAYS_MILLIS;
     }
 
     /**

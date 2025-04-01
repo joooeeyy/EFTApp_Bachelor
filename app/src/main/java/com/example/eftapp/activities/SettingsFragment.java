@@ -1,6 +1,5 @@
 package com.example.eftapp.activities;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,57 +11,50 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.eftapp.R;
-
-import java.util.Calendar;
-import java.util.Locale;
+import com.example.eftapp.databinding.FragmentSettingsBinding;
 
 import util.SettingsManager;
 
 public class SettingsFragment extends Fragment {
 
-    private Spinner spinnerGender, spinnerAge;
-    private Button developerButton, buttonFirstNotification, buttonSecondNotification;
+    private Spinner spinnerGender, spinnerAge; // Removed spinnerLanguage
+    private Button developerButton;
     private SettingsManager settingsManager;
-    private SharedPreferences notificationPrefs;
-    private static final String PREFS_NAME = "NotificationPrefs";
-    private static final String KEY_FIRST_NOTIFICATION_TIME = "first_notification_time";
-    private static final String KEY_SECOND_NOTIFICATION_TIME = "second_notification_time";
+    private FragmentSettingsBinding binding;
+
+    private int secretTapCount = 0;
+    private static final int SECRET_TAP_THRESHOLD = 7;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate and return the layout directly
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        // Use ViewBinding to inflate the layout
+        binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
         // Initialize SettingsManager
         settingsManager = new SettingsManager(requireContext());
-
-        // Initialize SharedPreferences for notification times
-        notificationPrefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         // Set up the Toolbar
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.settings_toolbar);
         if (getActivity() instanceof AppCompatActivity) {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             activity.setSupportActionBar(toolbar);
-            // Use ContextCompat to get the color
             toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
-            toolbar.setTitle("Voice Settings");
+            toolbar.setTitle("Settings");
         }
 
         // Initialize Spinners
-        spinnerGender = view.findViewById(R.id.spinnerGender);
-        spinnerAge = view.findViewById(R.id.spinnerAge);
+        spinnerGender = binding.spinnerGender;
+        spinnerAge = binding.spinnerAge;
 
-        // Set up adapters for Spinners
         ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.gender_options,
@@ -79,34 +71,63 @@ public class SettingsFragment extends Fragment {
         ageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAge.setAdapter(ageAdapter);
 
-        // Load saved settings
         loadSavedSettings();
-
-        // Set up Spinner listeners
         setupSpinnerListener(spinnerGender);
         setupSpinnerListener(spinnerAge);
 
-        // Initialize Notification Time Buttons
-        buttonFirstNotification = view.findViewById(R.id.buttonFirstNotification);
-        buttonSecondNotification = view.findViewById(R.id.buttonSecondNotification);
+        developerButton = binding.developerButton;
+        developerButton.setVisibility(View.GONE); // Initially hide
 
-        // Load saved notification times
-        loadNotificationTimes();
-
-        // Set up click listeners for the notification time buttons
-        buttonFirstNotification.setOnClickListener(v -> showTimePickerDialog(KEY_FIRST_NOTIFICATION_TIME));
-        buttonSecondNotification.setOnClickListener(v -> showTimePickerDialog(KEY_SECOND_NOTIFICATION_TIME));
-
-        // Developer Button
-        developerButton = view.findViewById(R.id.developerButton);
         developerButton.setOnClickListener(view1 -> {
             SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear(); // Remove specific key-value pair
+            editor.clear();
             editor.apply();
         });
 
+        // SECRET TAP DETECTOR (For example, on the toolbar title)
+        toolbar.setOnClickListener(v -> {
+            secretTapCount++;
+            if (secretTapCount >= SECRET_TAP_THRESHOLD) {
+                toggleDeveloperButtonVisibility();
+                secretTapCount = 0; // Reset
+            }
+        });
+
+        // Load saved times from SharedPreferences to display on buttons
+        SharedPreferences preferences = requireActivity().getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE);
+        int firstHour = preferences.getInt("first_notification_hour", 9);
+        int firstMinute = preferences.getInt("first_notification_minute", 0);
+        int secondHour = preferences.getInt("second_notification_hour", 18);
+        int secondMinute = preferences.getInt("second_notification_minute", 0);
+
+        binding.buttonFirstNotification.setText(String.format("%02d:%02d", firstHour, firstMinute));
+        binding.buttonSecondNotification.setText(String.format("%02d:%02d", secondHour, secondMinute));
+
+        binding.buttonFirstNotification.setOnClickListener(v -> {
+            ((MainActivity) requireActivity()).showTimePickerDialog(1001);
+        });
+
+        binding.buttonSecondNotification.setOnClickListener(v -> {
+            ((MainActivity) requireActivity()).showTimePickerDialog(1002);
+        });
+
         return view;
+    }
+
+    private void toggleDeveloperButtonVisibility() {
+        if (developerButton.getVisibility() == View.VISIBLE) {
+            developerButton.setVisibility(View.GONE);
+        } else {
+            developerButton.setVisibility(View.VISIBLE);
+        }
+        developerButton.postInvalidate(); // Immediate UI update
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void setupSpinnerListener(Spinner spinner) {
@@ -114,6 +135,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 saveSettings();
+                spinner.postInvalidate(); // Immediate UI update
             }
 
             @Override
@@ -124,10 +146,10 @@ public class SettingsFragment extends Fragment {
     }
 
     private void loadSavedSettings() {
-        // Load saved settings and set Spinner selections
         String savedGender = settingsManager.getGender();
         String savedAge = settingsManager.getAge();
-
+        String savedValue = settingsManager.getValue();
+        Log.d("SettingsFragment", "Loading - Gender: " + savedGender + ", Age: " + savedAge + ", Value: " + savedValue);
         setSpinnerSelection(spinnerGender, savedGender);
         setSpinnerSelection(spinnerAge, savedAge);
     }
@@ -143,14 +165,14 @@ public class SettingsFragment extends Fragment {
     private void saveSettings() {
         // Get selected values
         String gender = spinnerGender.getSelectedItem().toString();
-        String age = spinnerAge.getSelectedItem().toString();
+        String age = spinnerAge.getSelectedItem().toString(); // Removed language
 
         // Map selected options to the corresponding value
-        String selectedValue = mapSelectionToValue(gender, age);
+        String selectedValue = mapSelectionToValue(gender, age); // Removed language
         Log.d("SettingsFragment", "Selected Value: " + selectedValue);
 
         // Save settings
-        settingsManager.saveSettings(gender, age, selectedValue);
+        settingsManager.saveSettings(gender, age, selectedValue); // Removed language
     }
 
     private String mapSelectionToValue(String gender, String age) {
@@ -164,54 +186,7 @@ public class SettingsFragment extends Fragment {
         } else if (gender.equals("Female") && age.equals("Mature")) {
             return "64703b9541838e0023bcef48";
         } else {
-            return "default_value"; // Fallback value
+            return "6380894dd72424f0cfbdbe97"; // Fallback value
         }
-    }
-
-    private void loadNotificationTimes() {
-        // Load saved notification times
-        String firstTime = notificationPrefs.getString(KEY_FIRST_NOTIFICATION_TIME, "08:00");
-        String secondTime = notificationPrefs.getString(KEY_SECOND_NOTIFICATION_TIME, "20:00");
-
-        // Set the button text to the saved times
-        buttonFirstNotification.setText(firstTime);
-        buttonSecondNotification.setText(secondTime);
-    }
-
-    private void showTimePickerDialog(String key) {
-        // Create a TimePickerDialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                requireContext(),
-                (view, hourOfDay, minute) -> {
-                    // Format the selected time
-                    String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-
-                    // Save the selected time
-                    saveNotificationTime(key, time);
-
-                    // Update the button text
-                    if (key.equals(KEY_FIRST_NOTIFICATION_TIME)) {
-                        buttonFirstNotification.setText(time);
-                    } else {
-                        buttonSecondNotification.setText(time);
-                    }
-
-                    // Notify the user
-                    Toast.makeText(requireContext(), "Notification time set to " + time, Toast.LENGTH_SHORT).show();
-                },
-                Calendar.getInstance().get(Calendar.HOUR_OF_DAY), // Default hour
-                Calendar.getInstance().get(Calendar.MINUTE), // Default minute
-                true // 24-hour format
-        );
-
-        // Show the dialog
-        timePickerDialog.show();
-    }
-
-    private void saveNotificationTime(String key, String time) {
-        // Save the notification time in SharedPreferences
-        SharedPreferences.Editor editor = notificationPrefs.edit();
-        editor.putString(key, time);
-        editor.apply();
     }
 }

@@ -4,137 +4,152 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@color/white"> <!-- Add a background color -->
+    android:background="@color/white">
 
-    <!-- Question Text -->
-    <TextView
-        android:id="@+id/question"
+    <!-- ScrollView to handle overflow -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Question will appear here"
-        android:textSize="20sp"
-        android:textAlignment="center"
-        android:padding="16dp"
-        android:gravity="center"
-        android:layout_marginTop="32dp"
-    android:layout_marginBottom="24dp"
-    android:textColor="@color/black"
-    android:fontFamily="sans-serif-medium"
-    android:background="@drawable/question_background"
-    android:elevation="4dp"
-    />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+    android:fillViewport="true">
 
-    <!-- Poll Finished Text -->
-    <TextView
-        android:id="@+id/pollFinishedText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Poll Finished"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:padding="16dp"
-        android:layout_marginBottom="24dp"
-        android:textColor="@color/black"
-        android:fontFamily="sans-serif-medium"
-        android:visibility="gone"
-        android:background="@drawable/question_background"
-        android:elevation="4dp"
-        />
-
-    <!-- Answer Buttons Container -->
-    <LinearLayout
-        android:id="@+id/answers_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp">
-
-        <!-- Answer Buttons (7 buttons for TSRQ) -->
-        <Button
-            android:id="@+id/btn_left"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Not at all true"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btn_middle_left"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Slightly true"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btn_middle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Somewhat true"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btn_middle_right"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Moderately true"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btn_right"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Very true"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btn_right_more"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Extremely true"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btn_right_most"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Very true"
-            android:layout_marginBottom="12dp" />
-    </LinearLayout>
-
-    <!-- Finish Poll Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginTop="24dp">
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="32dp">
 
-        <Button
-            android:id="@+id/finishPollButton"
-            android:layout_width="wrap_content"
+        <!-- Question Text -->
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Finish Poll"
+            android:text="Question will appear here"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-medium"
+            android:background="@drawable/question_background"
+            android:elevation="4dp" />
+
+        <!-- Poll Finished Text -->
+        <TextView
+            android:id="@+id/pollFinishedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Poll Finished"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-medium"
             android:visibility="gone"
-            android:onClick="onFinishPollClicked"
-            android:backgroundTint="@color/purple_500"
-        android:textColor="@color/white" />
+            android:background="@drawable/question_background"
+            android:elevation="4dp" />
+
+        <!-- Answer Buttons Container -->
+        <LinearLayout
+            android:id="@+id/answers_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <!-- Answer Buttons (7 buttons for TSRQ) -->
+            <Button
+                android:id="@+id/btn_left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Not at all true"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btn_middle_left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Slightly true"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btn_middle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Somewhat true"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btn_middle_right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Moderately true"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btn_right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Very true"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btn_right_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Extremely true"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btn_right_most"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Very true"
+                android:layout_marginBottom="12dp" />
+        </LinearLayout>
+
+        <!-- Finish Poll Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="24dp">
+
+            <Button
+                android:id="@+id/finishPollButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finish Poll"
+                android:visibility="gone"
+                android:onClick="onFinishPollClicked"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@color/white" />
+        </LinearLayout>
     </LinearLayout>
+</ScrollView>
 
     <!-- Loading Overlay -->
-    <RelativeLayout
-        android:id="@+id/loadingOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:visibility="gone"
-        android:gravity="center">
+<RelativeLayout
+android:id="@+id/loadingOverlay"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#80000000"
+android:visibility="gone"
+android:gravity="center">
 
-        <!-- Circular ProgressBar to show loading -->
-        <ProgressBar
-            android:id="@+id/loadingProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/white" /> <!-- Change progress bar color -->
-    </RelativeLayout>
-</LinearLayout>
+<!-- Circular ProgressBar to show loading -->
+<ProgressBar
+    android:id="@+id/loadingProgressBar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:indeterminate="true"
+    android:indeterminateTint="@color/white" />
+</RelativeLayout>
+    </LinearLayout>

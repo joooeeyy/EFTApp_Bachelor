@@ -19,22 +19,22 @@ import android.widget.TextView;
 
 import com.example.eftapp.R;
 
-import java.util.Calendar;
-
 import util.PollManager;
+
+import java.util.Calendar;
 
 public class AddCueFragment extends Fragment {
 
     private ActivityResultLauncher<Intent> cueActivityLauncher;
     private SharedPreferences preferences;
     private boolean isGoalSet;
+    private boolean isPollCompleted;
     private View aiOption, pollOption, goalOption;
     private TextView cuesLeftText, daysTillPollText, dayCountText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_cue, container, false);
 
         // Find views
@@ -46,134 +46,117 @@ public class AddCueFragment extends Fragment {
         dayCountText = view.findViewById(R.id.day_count_text);
 
         // Check the current status of goal and poll
-        updateCardStatuses();
+        updateCardStatuses(view); // Pass the inflated view to updateCardStatuses
+
+        // Update the day count as soon as the view is created
+        updateDayCount();
 
         goalOption.setOnClickListener(v -> {
-            // Launch the GoalActivity to let the user set their goal
             Intent intent = new Intent(getActivity(), GoalActivity.class);
             startActivity(intent);
         });
 
-        // Register the launcher to handle the result from CueGenerationActivity
         cueActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        // Ensure that AddFragment is not in the back stack and replace it with HomeFragment
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-
-                        // Replace the AddFragment with the HomeFragment
                         HomeFragment homeFragment = new HomeFragment();
-
-                        // Replace without adding to back stack
                         transaction.replace(R.id.frame_layout, homeFragment);
-
-                        // Commit the transaction
                         transaction.commit();
                     }
                 }
         );
 
-        // Set an OnClickListener on the AI option card
         aiOption.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), CueGenerationActivity.class);
             cueActivityLauncher.launch(intent);
         });
 
-        // Set an OnClickListener on the Poll option card
         pollOption.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), InstructionPollActivity.class);
             startActivity(intent);
 
-            updateCardStatuses(); // Update the UI after completing the poll
+            updateCardStatuses(view); // Pass the inflated view to updateCardStatuses
         });
 
-        return view; // Return the inflated layout
+        return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Reset future events if needed (e.g., at midnight)
         PollManager.resetFutureEventsIfNeeded(requireContext());
-        // Recheck the statuses whenever the fragment resumes
-        updateCardStatuses();
+
+        // Check if the view is not null before updating UI
+        View view = getView();
+        if (view != null) {
+            updateCardStatuses(view); // Pass the current view to updateCardStatuses
+            updateDayCount(); // Update the day count whenever the fragment resumes
+        }
     }
 
-    private void updateCardStatuses() {
-        // Check if the goal is set
-        checkGoalStatus();
+    private void updateCardStatuses(View view) {
+        checkGoalStatus(); // Check if a goal is set
 
-        // Check if poll should be shown again
-        boolean shouldShowPoll = PollManager.shouldShowPollAgain(getContext());
+        // Find the container for the information cards using the passed view
+        View informationCardsContainer = view.findViewById(R.id.information_cards_container);
 
         if (!isGoalSet) {
-            // If the goal is not set, both Poll and Add Cue options should be at 0.5 alpha
+            // If no goal is set:
+            // 1. Make the AI and Poll cards transparent and not clickable
             pollOption.setAlpha(0.5f);
             pollOption.setEnabled(false);
             aiOption.setAlpha(0.5f);
             aiOption.setEnabled(false);
 
-            // Hide the TextViews
-            cuesLeftText.setVisibility(View.GONE);
-            daysTillPollText.setVisibility(View.GONE);
-            dayCountText.setVisibility(View.GONE);
-        } else if (isGoalSet) {
-            // If goal is set, hide the goal card
+            // 2. Hide the information cards container
+            informationCardsContainer.setVisibility(View.GONE);
+
+            // 3. Ensure the goal option is visible
+            goalOption.setVisibility(View.VISIBLE);
+        } else {
+            // If a goal is set:
+            // 1. Make the AI and Poll cards fully visible and clickable
+            pollOption.setAlpha(1.0f);
+            pollOption.setEnabled(true);
+            aiOption.setAlpha(1.0f);
+            aiOption.setEnabled(true);
+
+            // 2. Show the information cards container
+            informationCardsContainer.setVisibility(View.VISIBLE);
+
+            // 3. Hide the goal option since it's already set
             goalOption.setVisibility(View.GONE);
 
-            // Show the TextViews
-            cuesLeftText.setVisibility(View.VISIBLE);
-            daysTillPollText.setVisibility(View.VISIBLE);
-            dayCountText.setVisibility(View.VISIBLE);
-
-            // Update the TextViews with the correct values
+            // 4. Update the future events and poll timers
             updateFutureEventsLeft();
             updateTimeTillNextPoll();
-            updateDayCount(); // Update the day count
-
-            // Enable or disable the AI option based on whether the poll is completed
-            if (shouldShowPoll) {
-                // If poll is due, gray out the AI option
-                aiOption.setAlpha(0.5f);
-                aiOption.setEnabled(false);
-            } else {
-                // If poll is completed, enable the AI option
-                aiOption.setAlpha(1.0f);
-                aiOption.setEnabled(true);
-            }
         }
     }
 
     private void checkGoalStatus() {
-        // Retrieve SharedPreferences to check if goal is set
         SharedPreferences preferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String savedGoal = preferences.getString("long_term_goal", null);
-
-        // If goal is set, update the flag
         isGoalSet = savedGoal != null && !savedGoal.isEmpty();
     }
 
     private void updateFutureEventsLeft() {
-        // Retrieve the number of future events left from SharedPreferences
         SharedPreferences preferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        int futureEventsLeft = preferences.getInt("future_events_left", 2); // Default to 2
-
-        // Update the TextView
-        cuesLeftText.setText("Mental Movies Left to Reflect on: " + futureEventsLeft);
+        int futureEventsLeft = preferences.getInt("future_events_left", 2);
+        cuesLeftText.setText("Mental Movies left for Today: " + futureEventsLeft);
     }
 
     private void updateTimeTillNextPoll() {
-        // Calculate the time till the next poll
         long firstPollDate = PollManager.getFirstPollDate(requireContext());
         if (firstPollDate == -1) {
-            daysTillPollText.setText("Next Poll: Poll not done yet");
+            daysTillPollText.setText("Next Poll: Not Scheduled");
             return;
         }
 
         long currentTime = System.currentTimeMillis();
         long timeDifference = currentTime - firstPollDate;
-        long timeTillNextPoll = PollManager.FOUR_DAYS_MILLIS - timeDifference;
+        long timeTillNextPoll = PollManager.ONE_WEEK_MILLIS - timeDifference;
 
         if (timeTillNextPoll <= 0) {
             daysTillPollText.setText("Next Poll: Due Now");
@@ -184,31 +167,25 @@ public class AddCueFragment extends Fragment {
     }
 
     private void updateDayCount() {
-        long firstPollDate = PollManager.getFirstPollDate(requireContext());
-        if (firstPollDate == -1) {
-            // Poll hasn't been started yet
-            dayCountText.setText("DAY 0");
+        long pollStartDate = PollManager.getPollStartDate(requireContext());
+
+        if (pollStartDate == -1) {
+            dayCountText.setText("DAY 1");
             return;
         }
 
-        long currentTime = System.currentTimeMillis();
-        Calendar firstPollCalendar = Calendar.getInstance();
-        firstPollCalendar.setTimeInMillis(firstPollDate);
-        firstPollCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        firstPollCalendar.set(Calendar.MINUTE, 0);
-        firstPollCalendar.set(Calendar.SECOND, 0);
-        firstPollCalendar.set(Calendar.MILLISECOND, 0);
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTimeInMillis(pollStartDate);
 
         Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.setTimeInMillis(currentTime);
         currentCalendar.set(Calendar.HOUR_OF_DAY, 0);
         currentCalendar.set(Calendar.MINUTE, 0);
         currentCalendar.set(Calendar.SECOND, 0);
         currentCalendar.set(Calendar.MILLISECOND, 0);
 
-        long daysSinceFirstPoll = (currentCalendar.getTimeInMillis() - firstPollCalendar.getTimeInMillis()) / (24 * 60 * 60 * 1000);
-        int dayCount = (int) daysSinceFirstPoll + 1; // Add 1 to start counting from DAY 1
+        long diffInMillis = currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis();
+        long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
 
-        dayCountText.setText("DAY " + dayCount);
+        dayCountText.setText("DAY " + (diffInDays + 1));
     }
 }

@@ -39,9 +39,38 @@
                 android:gravity="start"
                 app:layout_constraintTop_toBottomOf="@id/back_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/inspire_button_switcher"
                 android:layout_marginTop="16dp"
                 android:layout_marginHorizontal="16dp" />
+
+            <!-- ViewSwitcher for Inspire Button and Loading ProgressBar -->
+            <ViewSwitcher
+                android:id="@+id/inspire_button_switcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/questionnaire_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/questionnaire_title">
+
+                <!-- Inspire Button -->
+                <Button
+                    android:id="@+id/random_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="randomise"
+                    android:paddingHorizontal="8dp"
+                    android:text="Inspire"
+                    android:textSize="14sp" />
+
+                <!-- Loading ProgressBar -->
+                <ProgressBar
+                    android:id="@+id/loading_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:layout_gravity="center" />
+            </ViewSwitcher>
 
             <!-- Long Term Goal Section -->
             <androidx.cardview.widget.CardView
@@ -57,9 +86,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:padding="16dp">
 
                     <!-- Long Term Goal Label -->
@@ -70,25 +100,19 @@
                         android:text="Long Term Goal"
                         android:textSize="16sp"
                         android:textColor="#000"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        android:layout_marginEnd="16dp" />
 
                     <!-- Display of the Long Term Goal -->
                     <TextView
                         android:id="@+id/display_goal"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Your goal will appear here"
                         android:textSize="16sp"
                         android:textColor="#3F51B5"
-                        android:gravity="end"
-                        app:layout_constraintStart_toEndOf="@id/label_goal"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginStart="16dp" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:gravity="end" />
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Questionnaire Section (All inputs in one CardView) -->
@@ -112,10 +136,11 @@
                     android:padding="16dp">
 
                     <!-- Where -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/label_where"
@@ -123,23 +148,17 @@
                             android:layout_height="wrap_content"
                             android:text="Where:"
                             android:textSize="16sp"
-                            android:textColor="#000"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                            android:textColor="#000" />
 
                         <EditText
                             android:id="@+id/input_field_where"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:hint="Home"
                             android:textColor="#000"
                             android:textColorHint="#888"
                             android:padding="8dp"
-                            app:layout_constraintStart_toEndOf="@id/label_where"
-                            app:layout_constraintEnd_toStartOf="@id/question_mark_where"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
 
                         <ImageView
@@ -151,17 +170,15 @@
                             android:contentDescription="Help for where"
                             android:padding="8dp"
                             android:scaleType="center"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
                     <!-- When -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/label_when"
@@ -169,23 +186,17 @@
                             android:layout_height="wrap_content"
                             android:text="When:"
                             android:textSize="16sp"
-                            android:textColor="#000"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                            android:textColor="#000" />
 
                         <EditText
                             android:id="@+id/input_field_when"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:hint="5 days"
                             android:textColor="#000"
                             android:textColorHint="#888"
                             android:padding="8dp"
-                            app:layout_constraintStart_toEndOf="@id/label_when"
-                            app:layout_constraintEnd_toStartOf="@id/question_mark_when"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
 
                         <ImageView
@@ -197,17 +208,15 @@
                             android:contentDescription="Help for when"
                             android:padding="8dp"
                             android:scaleType="center"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
                     <!-- Action -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/label_how"
@@ -215,23 +224,17 @@
                             android:layout_height="wrap_content"
                             android:text="Action:"
                             android:textSize="16sp"
-                            android:textColor="#000"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                            android:textColor="#000" />
 
                         <EditText
                             android:id="@+id/input_field_how"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:hint="Cutting a cake"
                             android:textColor="#000"
                             android:textColorHint="#888"
                             android:padding="8dp"
-                            app:layout_constraintStart_toEndOf="@id/label_how"
-                            app:layout_constraintEnd_toStartOf="@id/question_mark_how"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
 
                         <ImageView
@@ -243,17 +246,15 @@
                             android:contentDescription="Help for action"
                             android:padding="8dp"
                             android:scaleType="center"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
                     <!-- Objects -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/label_what"
@@ -261,23 +262,17 @@
                             android:layout_height="wrap_content"
                             android:text="Objects:"
                             android:textSize="16sp"
-                            android:textColor="#000"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                            android:textColor="#000" />
 
                         <EditText
                             android:id="@+id/input_field_what"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:hint="Balloons, cake, presents"
                             android:textColor="#000"
                             android:textColorHint="#888"
                             android:padding="8dp"
-                            app:layout_constraintStart_toEndOf="@id/label_what"
-                            app:layout_constraintEnd_toStartOf="@id/question_mark_what"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
 
                         <ImageView
@@ -289,17 +284,15 @@
                             android:contentDescription="Help for objects"
                             android:padding="8dp"
                             android:scaleType="center"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
                     <!-- Who -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/label_who"
@@ -307,23 +300,17 @@
                             android:layout_height="wrap_content"
                             android:text="Who:"
                             android:textSize="16sp"
-                            android:textColor="#000"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                            android:textColor="#000" />
 
                         <EditText
                             android:id="@+id/input_field_who"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:hint="Family and friends"
                             android:textColor="#000"
                             android:textColorHint="#888"
                             android:padding="8dp"
-                            app:layout_constraintStart_toEndOf="@id/label_who"
-                            app:layout_constraintEnd_toStartOf="@id/question_mark_who"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
 
                         <ImageView
@@ -335,11 +322,8 @@
                             android:contentDescription="Help for who"
                             android:padding="8dp"
                             android:scaleType="center"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="8dp" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -361,7 +345,7 @@
                 android:id="@+id/title_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Tipps"
+                android:text="Tips"
                 android:textSize="24sp"
                 android:textColor="#000"
                 android:textStyle="bold"

@@ -147,6 +147,7 @@
 
         <!-- Vertical Layout for Information Cards -->
         <LinearLayout
+            android:id="@+id/information_cards_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

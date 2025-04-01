@@ -38,9 +38,38 @@ public class EftApi {
             "\n" +
             "Provide a title for the story at the top.\n" +
             "\n" +
-            "Base the story on those factors (If the answers are in German, produce the story text in German):";
-    private final String cueImagePrompt = "Make a simplistic enviroment picture as motivation without using any humans or animals, which fits the following text: ";
+            "Base the story on those factors:";
+    private final String cueImagePrompt = "Make a simplistic environment picture as motivation without using any humans or animals, which fits the following text: ";
     private int userId;
+    private final String randomisePrompt = ", was achieved. The person is ecstatic of achieving this longterm goal. Now the person wants to do something associated with the long term goal. Create such a scenario by filling in those blankets, each should have a maximum of 10 words. Each new iteration should vary slightly in story:\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "Where does it take place:?\n" +
+            "\n" +
+            "When does it take place in the future:?\n" +
+            "\n" +
+            "What am I doing in this scenario:?\n" +
+            "\n" +
+            "What objects are in the environment of this scenario:?\n" +
+            "\n" +
+            "Who is there in this scenario:?\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "the output text should be pure with no overhead like this:\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "where:\n" +
+            "\n" +
+            "when:\n" +
+            "\n" +
+            "what:\n" +
+            "\n" +
+            "objects:\n" +
+            "\n" +
+            "who:";
 
     private OkHttpClient client;
     private ApiResponseCallback callback;
@@ -250,10 +279,60 @@ public class EftApi {
         });
     }
 
+    // Separate method to make the retention API call
+    public void requestRandomise(String goal) {
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        JSONObject jsonObject = new JSONObject();
+
+        String prompt = "Picture this, a longterm goal of: " + goal + randomisePrompt;
+
+        try {
+            jsonObject.put("content", prompt);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onError(e);
+            return;
+        }
+
+        RequestBody body = RequestBody.create(mediaType, jsonObject.toString());
+        Request request = new Request.Builder()
+                .url(API_URL)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("ApiCallback", "Failed to receive randomised Cue", e);
+                callback.onError(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    JSONObject jsonResponse = null;
+                    try {
+                        jsonResponse = new JSONObject(responseBody);
+                        String text = jsonResponse.getString("text");
+
+                        callback.onSuccess(text);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    callback.onError(new IOException("Failed to receive randomised Cue"));
+                }
+            }
+        });
+    }
+
     public interface ApiResponseCallback {
         void onSuccess(String[] titleAndText, byte[] audioData, byte[] image);
         void onSuccess();
         void onError(Exception e);
+        void onSuccess(String randomizedCue);
     }
 
     private static String[] splitText(String input) {

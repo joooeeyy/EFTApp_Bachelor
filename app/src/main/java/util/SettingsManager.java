@@ -34,6 +34,6 @@ public class SettingsManager {
     }
 
     public String getValue() {
-        return sharedPreferences.getString(KEY_VALUE, "-1"); // Default value
+        return sharedPreferences.getString(KEY_VALUE, "6380894dd72424f0cfbdbe97"); // Default value Male Mature
     }
 }

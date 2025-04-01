@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# OkHttp
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+-keep class okio.** { *; }
+-dontwarn okio.**
+
+# Retrofit (if used)
+-keep class retrofit2.** { *; }
+-dontwarn retrofit2.**
+-keepattributes Signature, Exceptions
+
+# Gson (if used)
+-keep class com.google.gson.** { *; }
+-keep class com.google.gson.stream.** { *; }

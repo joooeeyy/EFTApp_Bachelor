@@ -10,14 +10,12 @@ import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.ViewSwitcher;
 
 import com.example.eftapp.R;
 
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 
 import ViewModel.ApiViewModel;
 import util.InfoPopup;
-import util.PollManager;
 
 public class CueGenerationActivity extends AppCompatActivity {
 
@@ -50,12 +48,16 @@ public class CueGenerationActivity extends AppCompatActivity {
     private static final long TIMEOUT_DURATION = 120000; // 120 seconds in milliseconds
     TextView instructionsText;
 
+    private ViewSwitcher inspireButtonSwitcher;
+    private Button randomButton;
+    private ProgressBar loadingProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cue_generation);
 
-        // Initialize UI components
+        // Input fields UI
         inputFieldWhere = findViewById(R.id.input_field_where);
         inputFieldWhen = findViewById(R.id.input_field_when);
         inputFieldWhat = findViewById(R.id.input_field_what);
@@ -71,7 +73,14 @@ public class CueGenerationActivity extends AppCompatActivity {
 
         backButton = findViewById(R.id.back_button);
 
+        randomButton = findViewById(R.id.random_button);
+
         displayGoal = findViewById(R.id.display_goal);
+
+        // Initialize UI components
+        inspireButtonSwitcher = findViewById(R.id.inspire_button_switcher);
+        randomButton = findViewById(R.id.random_button);
+        loadingProgress = findViewById(R.id.loading_progress);
 
         instructionsText = findViewById(R.id.instructions_text);
         String text = getString(R.string.cueInstruction);
@@ -137,6 +146,12 @@ public class CueGenerationActivity extends AppCompatActivity {
             }
         });
 
+        apiViewModel.getRandomizedCueText().observe(this, randomizedText -> {
+            if (randomizedText != null) {
+                parseAndPopulateRandomizedText(randomizedText);
+            }
+        });
+
         // Add TextWatchers to all input fields
         TextWatcher inputWatcher = new TextWatcher() {
             @Override
@@ -187,6 +202,14 @@ public class CueGenerationActivity extends AppCompatActivity {
 
         // Make the API call to fetch text and audio
         apiViewModel.submitCue(inputs);
+    }
+
+    public void randomise(View view) {
+        // Show the loading ProgressBar
+        inspireButtonSwitcher.setDisplayedChild(1); // Switch to the ProgressBar
+
+        String goal = getGoal();
+        apiViewModel.randomise(goal);
     }
 
     private void checkFieldsForEmptyValues() {
@@ -244,5 +267,28 @@ public class CueGenerationActivity extends AppCompatActivity {
 
         // Set the SpannableString to the TextView
         instructionsText.setText(spannableString);
+    }
+
+    private void parseAndPopulateRandomizedText(String randomizedText) {
+        // Split the text into lines
+        String[] lines = randomizedText.split("\n");
+
+        // Iterate through each line and extract the relevant part
+        for (String line : lines) {
+            if (line.startsWith("where:")) {
+                inputFieldWhere.setText(line.replace("where:", "").trim());
+            } else if (line.startsWith("when:")) {
+                inputFieldWhen.setText(line.replace("when:", "").trim());
+            } else if (line.startsWith("what:")) {
+                inputFieldHow.setText(line.replace("what:", "").trim());
+            } else if (line.startsWith("objects:")) {
+                inputFieldWhat.setText(line.replace("objects:", "").trim());
+            } else if (line.startsWith("who:")) {
+                inputFieldWho.setText(line.replace("who:", "").trim());
+            }
+        }
+
+        // Hide the loading ProgressBar and show the button
+        inspireButtonSwitcher.setDisplayedChild(0); // Switch back to the Button
     }
 }

@@ -5,8 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -188,15 +192,6 @@ public class ReflectionActivity extends AppCompatActivity {
         }
     }
 
-    public void showStoryText(View view) {
-        Cue cue = reflectionViewModel.getCue().getValue();
-        if (cue != null) {
-            showStoryPopup(cue.getText());
-        } else {
-            Toast.makeText(this, "Story text not available", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -221,12 +216,39 @@ public class ReflectionActivity extends AppCompatActivity {
 
         storyTextView.setText(storyText);
 
+        // Make the TextView scrollable
+        storyTextView.setMovementMethod(new ScrollingMovementMethod());
+
         builder.setView(dialogView)
                 .setTitle("Written Text")
                 .setPositiveButton("Hide", (dialog, which) -> dialog.dismiss());
 
         storyDialog = builder.create();
         storyDialog.show();
+
+        // Adjust the dialog window size to a percentage of the screen height
+        Window window = storyDialog.getWindow();
+        if (window != null) {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenHeight = displayMetrics.heightPixels;
+            int dialogHeight = (int) (screenHeight * 0.7); // 70% of screen height
+
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(window.getAttributes());
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT; // Set width to match parent
+            layoutParams.height = dialogHeight; // Set height to 70% of screen height
+            window.setAttributes(layoutParams);
+        }
+    }
+
+    public void showStoryText(View view) {
+        Cue cue = reflectionViewModel.getCue().getValue();
+        if (cue != null) {
+            showStoryPopup(cue.getText());
+        } else {
+            Toast.makeText(this, "Story text not available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showQuestionPopup(String question, String answers, String solution) {
@@ -235,28 +257,41 @@ public class ReflectionActivity extends AppCompatActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Question: " + question)
-                .setCancelable(false); // Prevent dismissing by clicking outside
+
+        // Inflate custom layout for the entire dialog
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_question, null);
+        LinearLayout answersLayout = dialogView.findViewById(R.id.answersLayout);
+        TextView questionTextView = dialogView.findViewById(R.id.questionTextView); // Ensure this ID matches the layout
+
+        questionTextView.setText(question); // Set the question here
 
         // Split answers into individual options
         String[] answerOptions = answers.split("\n");
 
-        // Inflate custom layout for buttons
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_question, null);
-        LinearLayout answersLayout = dialogView.findViewById(R.id.answersLayout);
-
-        // Create answer buttons
+        // Create answer buttons dynamically
         for (String option : answerOptions) {
             Button btn = new Button(this);
             btn.setText(option);
             btn.setOnClickListener(v -> handleAnswerSelection(option, solution));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.gravity = android.view.Gravity.CENTER_HORIZONTAL;
+            params.topMargin = 8;
+
+            btn.setLayoutParams(params);
             answersLayout.addView(btn);
         }
 
-        builder.setView(dialogView);
-        questionDialog = builder.create(); // Assign the dialog to the class variable
+        builder.setView(dialogView)
+                .setCancelable(false); // Prevent dismissing by clicking outside
+
+        questionDialog = builder.create();
         questionDialog.show();
     }
+
 
     private void handleAnswerSelection(String selectedAnswer, String solution) {
         // Extract just the letter (A/B/C/D) from solution

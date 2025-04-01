@@ -43,6 +43,10 @@ public class CueApiRepository implements EftApi.ApiResponseCallback {
         eftApi.aiTextResponse(inputs, voiceSetting);
     }
 
+    public void randomiseCue(String goal) {
+        eftApi.requestRandomise(goal);
+    }
+
     @Override
     public void onSuccess(String[] cueResponse, byte[] audioData, byte[] image) {
         String title = cueResponse[0];
@@ -73,8 +77,13 @@ public class CueApiRepository implements EftApi.ApiResponseCallback {
 
     @Override
     public void onError(Exception e) {
-        Log.d("ResponseCallbackError", "No Api Response");
+        Log.d("ResponseCallbackError", "CueApi Response Error");
         apiViewModel.setApiResponse(false);
+    }
+
+    @Override
+    public void onSuccess(String randomizedCue) {
+        apiViewModel.setRandomizedCueResponse(randomizedCue);
     }
 
     private String saveAudioToFile(byte[] audioData) throws IOException {
